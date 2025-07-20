@@ -3,6 +3,7 @@ package de.dittnet.unsplashDownloader.service;
 import de.dittnet.unsplashDownloader.entity.PhotoEntity;
 import de.dittnet.unsplashDownloader.entity.PhotoTagEntity;
 import de.dittnet.unsplashDownloader.model.Photo;
+import de.dittnet.unsplashDownloader.model.TagStats;
 import de.dittnet.unsplashDownloader.repository.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -98,6 +100,14 @@ public class PhotoService {
     
     public List<String> getAllTags() {
         return photoRepository.findAllTags();
+    }
+    
+    public List<TagStats> getPopularTags(int limit) {
+        List<Object[]> results = photoRepository.findPopularTagsWithCount();
+        return results.stream()
+            .limit(limit)
+            .map(row -> new TagStats((String) row[0], ((Number) row[1]).longValue()))
+            .collect(Collectors.toList());
     }
     
     public long getTotalPhotosCount() {

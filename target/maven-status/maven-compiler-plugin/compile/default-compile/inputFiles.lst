@@ -13,6 +13,7 @@
 /Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/src/main/java/de/dittnet/unsplashDownloader/model/DownloadProgress.java
 /Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/src/main/java/de/dittnet/unsplashDownloader/service/ApiKeyService.java
 /Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/src/main/java/de/dittnet/unsplashDownloader/model/CollectionStats.java
+/Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/src/main/java/de/dittnet/unsplashDownloader/model/TagStats.java
 /Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/src/main/java/de/dittnet/unsplashDownloader/service/CollectionStatsService.java
 /Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/src/main/java/de/dittnet/unsplashDownloader/controller/ApiKeyController.java
 /Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/src/main/java/de/dittnet/unsplashDownloader/controller/WebController.java

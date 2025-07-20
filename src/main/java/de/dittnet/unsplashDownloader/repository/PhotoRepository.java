@@ -46,6 +46,10 @@ public interface PhotoRepository extends JpaRepository<PhotoEntity, String> {
     @Query("SELECT DISTINCT t.tagTitle FROM PhotoTagEntity t ORDER BY t.tagTitle")
     List<String> findAllTags();
     
+    // Get popular tags with count (top tags by frequency)
+    @Query("SELECT t.tagTitle, COUNT(t) as tagCount FROM PhotoTagEntity t GROUP BY t.tagTitle ORDER BY tagCount DESC, t.tagTitle ASC")
+    List<Object[]> findPopularTagsWithCount();
+    
     // Get photos with color
     Page<PhotoEntity> findByColorContainingIgnoreCase(String color, Pageable pageable);
     

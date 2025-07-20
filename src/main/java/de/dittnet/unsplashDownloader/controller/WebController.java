@@ -2,6 +2,7 @@ package de.dittnet.unsplashDownloader.controller;
 
 import de.dittnet.unsplashDownloader.entity.PhotoEntity;
 import de.dittnet.unsplashDownloader.model.CollectionStats;
+import de.dittnet.unsplashDownloader.model.TagStats;
 import de.dittnet.unsplashDownloader.model.UserSettings;
 import de.dittnet.unsplashDownloader.service.PhotoService;
 import de.dittnet.unsplashDownloader.service.CollectionStatsService;
@@ -104,12 +105,12 @@ public class WebController {
         List<String> photographers = photoService.getAllPhotographers().stream()
             .limit(50) // Top 50 photographers for stats page
             .collect(Collectors.toList());
-        List<String> tags = photoService.getAllTags().stream()
-            .limit(100) // Top 100 tags for stats page
-            .collect(Collectors.toList());
+        
+        // Get popular tags with counts for better display
+        List<TagStats> popularTags = photoService.getPopularTags(100);
             
         model.addAttribute("photographers", photographers);
-        model.addAttribute("tags", tags);
+        model.addAttribute("popularTags", popularTags);
         
         return "stats";
     }

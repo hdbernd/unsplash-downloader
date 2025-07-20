@@ -7,7 +7,7 @@ public class ApiKeyInfo {
     private String type;
     private boolean active;
     private int usageCount;
-    private int dailyLimit;
+    private int hourlyLimit;
     
     // Constructors
     public ApiKeyInfo() {}
@@ -19,7 +19,7 @@ public class ApiKeyInfo {
         this.type = type;
         this.active = true;
         this.usageCount = 0;
-        this.dailyLimit = 500;
+        this.hourlyLimit = 50;
     }
     
     // Getters and Setters
@@ -71,22 +71,33 @@ public class ApiKeyInfo {
         this.usageCount = usageCount;
     }
     
-    public int getDailyLimit() {
-        return dailyLimit;
+    public int getHourlyLimit() {
+        return hourlyLimit;
     }
     
-    public void setDailyLimit(int dailyLimit) {
-        this.dailyLimit = dailyLimit;
+    public void setHourlyLimit(int hourlyLimit) {
+        this.hourlyLimit = hourlyLimit;
+    }
+    
+    // Backward compatibility methods
+    @Deprecated
+    public int getDailyLimit() {
+        return hourlyLimit;
+    }
+    
+    @Deprecated
+    public void setDailyLimit(int limit) {
+        this.hourlyLimit = limit;
     }
     
     // Helper methods
     public double getUsagePercentage() {
-        if (dailyLimit == 0) return 0.0;
-        return (double) usageCount / dailyLimit * 100.0;
+        if (hourlyLimit == 0) return 0.0;
+        return (double) usageCount / hourlyLimit * 100.0;
     }
     
     public int getRemainingRequests() {
-        return Math.max(0, dailyLimit - usageCount);
+        return Math.max(0, hourlyLimit - usageCount);
     }
     
     public boolean isNearLimit() {
@@ -94,6 +105,6 @@ public class ApiKeyInfo {
     }
     
     public boolean isAtLimit() {
-        return usageCount >= dailyLimit;
+        return usageCount >= hourlyLimit;
     }
 }

@@ -15,6 +15,7 @@ de/dittnet/unsplashDownloader/service/DownloadService.class
 de/dittnet/unsplashDownloader/service/DownloadProgressService.class
 de/dittnet/unsplashDownloader/model/UserSettings.class
 de/dittnet/unsplashDownloader/service/CollectionStatsService.class
+de/dittnet/unsplashDownloader/model/TagStats.class
 de/dittnet/unsplashDownloader/service/DownloadService$1.class
 de/dittnet/unsplashDownloader/service/UserSettingsService.class
 de/dittnet/unsplashDownloader/config/DatabaseConfig.class
