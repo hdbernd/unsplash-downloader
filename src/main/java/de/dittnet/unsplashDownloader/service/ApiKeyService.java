@@ -68,8 +68,10 @@ public class ApiKeyService {
                 
                 if (apiKeyManager != null) {
                     Map<String, Integer> usage = apiKeyManager.getCurrentUsage();
+                    Map<String, Boolean> rateLimited = apiKeyManager.getRateLimitedKeys();
                     info.setUsageCount(usage.getOrDefault(singleKey, 0));
-                    info.setDailyLimit(500);
+                    info.setDailyLimit(50); // Demo apps: 50 requests/hour
+                    info.setActive(!rateLimited.getOrDefault(singleKey, false));
                 }
                 
                 keyInfos.add(info);
@@ -91,8 +93,10 @@ public class ApiKeyService {
                         
                         if (apiKeyManager != null) {
                             Map<String, Integer> usage = apiKeyManager.getCurrentUsage();
+                            Map<String, Boolean> rateLimited = apiKeyManager.getRateLimitedKeys();
                             info.setUsageCount(usage.getOrDefault(key, 0));
-                            info.setDailyLimit(500);
+                            info.setDailyLimit(50); // Demo apps: 50 requests/hour
+                            info.setActive(!rateLimited.getOrDefault(key, false));
                         }
                         
                         keyInfos.add(info);
@@ -115,6 +119,12 @@ public class ApiKeyService {
         
         String trimmedKey = apiKey.trim();
         logger.info("Validating API key (length: {})", trimmedKey.length());
+        
+        // Check for dummy/test keys
+        if (isDummyKey(trimmedKey)) {
+            logger.warn("Rejecting dummy/test API key: {}", trimmedKey);
+            return false;
+        }
         
         try {
             // Use /photos endpoint instead of /me for Client-ID validation
@@ -140,6 +150,25 @@ public class ApiKeyService {
             logger.error("Failed to validate API key", e);
             return false;
         }
+    }
+    
+    private boolean isDummyKey(String apiKey) {
+        if (apiKey == null) {
+            return true;
+        }
+        
+        String key = apiKey.trim().toLowerCase();
+        
+        // Check for common dummy/test key patterns
+        return key.contains("dummy") || 
+               key.contains("test") || 
+               key.contains("your_") || 
+               key.contains("example") || 
+               key.contains("placeholder") ||
+               key.contains("sample") ||
+               key.equals("your_api_key_here") ||
+               key.equals("your_access_token_here") ||
+               key.startsWith("dummy_test_key");
     }
     
     public void addApiKey(String apiKey) throws IOException {
@@ -239,19 +268,28 @@ public class ApiKeyService {
         int totalUsage = 0;
         int totalLimit = 0;
         int activeKeys = 0;
+        int rateLimitedKeys = 0;
         
         for (ApiKeyInfo key : keys) {
             totalUsage += key.getUsageCount();
             totalLimit += key.getDailyLimit();
             if (key.isActive()) {
                 activeKeys++;
+            } else {
+                rateLimitedKeys++;
             }
         }
         
         stats.put("totalUsage", totalUsage);
         stats.put("totalLimit", totalLimit);
         stats.put("activeKeys", activeKeys);
+        stats.put("rateLimitedKeys", rateLimitedKeys);
         stats.put("usagePercentage", totalLimit > 0 ? (double) totalUsage / totalLimit * 100 : 0);
+        
+        if (apiKeyManager != null) {
+            stats.put("nextResetTime", apiKeyManager.getNextResetTime());
+            stats.put("availableKeysCount", apiKeyManager.getAvailableKeysCount());
+        }
         
         return stats;
     }

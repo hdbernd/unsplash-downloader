@@ -8,30 +8,39 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ApiKeyManager {
     private static final Logger logger = LoggerFactory.getLogger(ApiKeyManager.class);
-    private static final int DEFAULT_DAILY_LIMIT = 500;
+    private static final int DEFAULT_HOURLY_LIMIT_DEMO = 50;
+    private static final int DEFAULT_HOURLY_LIMIT_PRODUCTION = 5000;
     
     private final List<String> apiKeys;
-    private final Map<String, Integer> dailyUsage;
-    private final Map<String, LocalDateTime> lastUsageDate;
+    private final Map<String, Integer> hourlyUsage;
+    private final Map<String, LocalDateTime> lastUsageHour;
+    private final Map<String, Boolean> keyRateLimited;
+    private final Map<String, LocalDateTime> rateLimitResetTime;
     private final AtomicInteger currentKeyIndex;
     private final ObjectMapper objectMapper;
     private final File stateFile;
-    private final int dailyLimit;
+    private final int hourlyLimit;
+    
+    private final String stateDir;
     
     public ApiKeyManager(String outputDir) throws IOException {
+        this.stateDir = outputDir;
         this.apiKeys = loadApiKeys();
-        this.dailyUsage = new HashMap<>();
-        this.lastUsageDate = new HashMap<>();
+        this.hourlyUsage = new HashMap<>();
+        this.lastUsageHour = new HashMap<>();
+        this.keyRateLimited = new HashMap<>();
+        this.rateLimitResetTime = new HashMap<>();
         this.currentKeyIndex = new AtomicInteger(0);
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         this.stateFile = new File(outputDir, "api_key_state.json");
-        this.dailyLimit = DEFAULT_DAILY_LIMIT;
+        this.hourlyLimit = DEFAULT_HOURLY_LIMIT_DEMO; // Default to demo limits
         
         loadState();
         validateKeys();
@@ -55,8 +64,22 @@ public class ApiKeyManager {
         // If no environment variables, try properties file
         if (keys.isEmpty()) {
             Properties prop = new Properties();
-            try (FileInputStream fis = new FileInputStream("config.properties")) {
-                prop.load(fis);
+            String configPath = stateDir != null ? 
+                Paths.get(stateDir, "config", "config.properties").toString() : 
+                "config.properties";
+            
+            File configFile = new File(configPath);
+            if (!configFile.exists() && stateDir == null) {
+                // Fallback to project root config.properties
+                configFile = new File("config.properties");
+            }
+            
+            logger.info("Looking for API keys in config file: {}", configFile.getAbsolutePath());
+            
+            if (configFile.exists()) {
+                logger.info("Found config file, loading API keys...");
+                try (FileInputStream fis = new FileInputStream(configFile)) {
+                    prop.load(fis);
                 
                 // Try single token first
                 String singleToken = prop.getProperty("unsplash.access.token");
@@ -75,6 +98,11 @@ public class ApiKeyManager {
                         }
                     }
                 }
+                } catch (IOException e) {
+                    logger.warn("Failed to load config file: {}", e.getMessage());
+                }
+            } else {
+                logger.warn("Config file not found: {}", configFile.getAbsolutePath());
             }
         }
         
@@ -83,7 +111,37 @@ public class ApiKeyManager {
         }
         
         logger.info("Loaded {} API key(s)", keys.size());
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            logger.info("API Key {}: length={}, starts with '{}'", i+1, key.length(), key.substring(0, Math.min(8, key.length())));
+            
+            // Check for dummy/test keys
+            if (isDummyKey(key)) {
+                logger.warn("⚠️  WARNING: API Key {} appears to be a dummy/test key: '{}'", i+1, key);
+                logger.warn("⚠️  Please add your real Unsplash API key through the web interface at http://localhost:8099");
+                logger.warn("⚠️  Downloads will fail with dummy keys!");
+            }
+        }
         return keys;
+    }
+    
+    private boolean isDummyKey(String apiKey) {
+        if (apiKey == null) {
+            return true;
+        }
+        
+        String key = apiKey.trim().toLowerCase();
+        
+        // Check for common dummy/test key patterns
+        return key.contains("dummy") || 
+               key.contains("test") || 
+               key.contains("your_") || 
+               key.contains("example") || 
+               key.contains("placeholder") ||
+               key.contains("sample") ||
+               key.equals("your_api_key_here") ||
+               key.equals("your_access_token_here") ||
+               key.startsWith("dummy_test_key");
     }
     
     private void validateKeys() {
@@ -93,42 +151,58 @@ public class ApiKeyManager {
         
         // Initialize usage tracking for all keys
         for (String key : apiKeys) {
-            dailyUsage.putIfAbsent(key, 0);
-            lastUsageDate.putIfAbsent(key, LocalDateTime.now());
+            hourlyUsage.putIfAbsent(key, 0);
+            lastUsageHour.putIfAbsent(key, LocalDateTime.now());
+            keyRateLimited.putIfAbsent(key, false);
+            rateLimitResetTime.putIfAbsent(key, LocalDateTime.now());
         }
     }
     
     public synchronized String getNextAvailableKey() {
         LocalDateTime now = LocalDateTime.now();
         
-        // First, reset daily counters for keys that haven't been used today
+        // First, reset hourly counters and rate limit flags for keys from previous hour
         for (String key : apiKeys) {
-            LocalDateTime lastUsed = lastUsageDate.get(key);
-            if (lastUsed != null && !now.toLocalDate().equals(lastUsed.toLocalDate())) {
-                dailyUsage.put(key, 0);
-                lastUsageDate.put(key, now);
+            LocalDateTime lastUsed = lastUsageHour.get(key);
+            LocalDateTime resetTime = rateLimitResetTime.get(key);
+            
+            // Reset hourly usage if we're in a new hour
+            if (lastUsed != null && lastUsed.getHour() != now.getHour()) {
+                hourlyUsage.put(key, 0);
+                lastUsageHour.put(key, now);
+                logger.info("Reset hourly usage for API key (starts with: {})", key.substring(0, Math.min(8, key.length())));
+            }
+            
+            // Reset rate limit flag if hour has passed since rate limit
+            if (keyRateLimited.get(key) && resetTime != null && now.isAfter(resetTime)) {
+                keyRateLimited.put(key, false);
+                logger.info("Rate limit reset for API key (starts with: {})", key.substring(0, Math.min(8, key.length())));
             }
         }
         
-        // Find a key that hasn't reached its daily limit
+        // Find a key that hasn't reached its hourly limit and isn't rate limited
         for (int i = 0; i < apiKeys.size(); i++) {
             int index = (currentKeyIndex.get() + i) % apiKeys.size();
             String key = apiKeys.get(index);
             
-            if (dailyUsage.get(key) < dailyLimit) {
+            if (!keyRateLimited.get(key) && hourlyUsage.get(key) < hourlyLimit) {
                 currentKeyIndex.set(index);
                 return key;
             }
         }
         
-        // All keys have reached their daily limit
+        // All keys have reached their hourly limit or are rate limited
         return null;
     }
     
     public synchronized void recordUsage(String key) {
         if (apiKeys.contains(key)) {
-            dailyUsage.put(key, dailyUsage.get(key) + 1);
-            lastUsageDate.put(key, LocalDateTime.now());
+            hourlyUsage.put(key, hourlyUsage.get(key) + 1);
+            lastUsageHour.put(key, LocalDateTime.now());
+            
+            int usage = hourlyUsage.get(key);
+            logger.debug("API key usage: {}/{} for key starting with: {}", 
+                usage, hourlyLimit, key.substring(0, Math.min(8, key.length())));
             
             try {
                 saveState();
@@ -142,16 +216,64 @@ public class ApiKeyManager {
         return getNextAvailableKey() != null;
     }
     
-    public synchronized int getTotalDailyUsage() {
-        return dailyUsage.values().stream().mapToInt(Integer::intValue).sum();
+    public synchronized void markKeyRateLimited(String key) {
+        if (apiKeys.contains(key)) {
+            keyRateLimited.put(key, true);
+            rateLimitResetTime.put(key, LocalDateTime.now().plusHours(1));
+            logger.warn("Marked API key as rate limited (starts with: {}). Will retry after: {}", 
+                key.substring(0, Math.min(8, key.length())), 
+                rateLimitResetTime.get(key));
+            
+            try {
+                saveState();
+            } catch (IOException e) {
+                logger.error("Failed to save API key state", e);
+            }
+        }
     }
     
-    public synchronized int getMaxDailyLimit() {
-        return dailyLimit * apiKeys.size();
+    public synchronized int getTotalHourlyUsage() {
+        return hourlyUsage.values().stream().mapToInt(Integer::intValue).sum();
+    }
+    
+    public synchronized int getMaxHourlyLimit() {
+        return hourlyLimit * apiKeys.size();
     }
     
     public synchronized Map<String, Integer> getCurrentUsage() {
-        return new HashMap<>(dailyUsage);
+        return new HashMap<>(hourlyUsage);
+    }
+    
+    public synchronized Map<String, Boolean> getRateLimitedKeys() {
+        return new HashMap<>(keyRateLimited);
+    }
+    
+    public synchronized int getAvailableKeysCount() {
+        LocalDateTime now = LocalDateTime.now();
+        int available = 0;
+        
+        for (String key : apiKeys) {
+            boolean rateLimited = keyRateLimited.get(key);
+            LocalDateTime resetTime = rateLimitResetTime.get(key);
+            
+            // Check if rate limit has expired
+            if (rateLimited && resetTime != null && now.isAfter(resetTime)) {
+                rateLimited = false;
+            }
+            
+            if (!rateLimited && hourlyUsage.get(key) < hourlyLimit) {
+                available++;
+            }
+        }
+        
+        return available;
+    }
+    
+    public synchronized LocalDateTime getNextResetTime() {
+        return rateLimitResetTime.values().stream()
+            .filter(Objects::nonNull)
+            .min(LocalDateTime::compareTo)
+            .orElse(LocalDateTime.now().plusHours(1));
     }
     
     private void loadState() {
@@ -162,8 +284,18 @@ public class ApiKeyManager {
         try {
             ApiKeyState state = objectMapper.readValue(stateFile, ApiKeyState.class);
             if (state != null) {
-                dailyUsage.putAll(state.getDailyUsage());
-                lastUsageDate.putAll(state.getLastUsageDate());
+                if (state.getHourlyUsage() != null) {
+                    hourlyUsage.putAll(state.getHourlyUsage());
+                }
+                if (state.getLastUsageHour() != null) {
+                    lastUsageHour.putAll(state.getLastUsageHour());
+                }
+                if (state.getKeyRateLimited() != null) {
+                    keyRateLimited.putAll(state.getKeyRateLimited());
+                }
+                if (state.getRateLimitResetTime() != null) {
+                    rateLimitResetTime.putAll(state.getRateLimitResetTime());
+                }
                 currentKeyIndex.set(state.getCurrentKeyIndex());
             }
         } catch (IOException e) {
@@ -173,32 +305,52 @@ public class ApiKeyManager {
     
     private void saveState() throws IOException {
         ApiKeyState state = new ApiKeyState();
-        state.setDailyUsage(new HashMap<>(dailyUsage));
-        state.setLastUsageDate(new HashMap<>(lastUsageDate));
+        state.setHourlyUsage(new HashMap<>(hourlyUsage));
+        state.setLastUsageHour(new HashMap<>(lastUsageHour));
+        state.setKeyRateLimited(new HashMap<>(keyRateLimited));
+        state.setRateLimitResetTime(new HashMap<>(rateLimitResetTime));
         state.setCurrentKeyIndex(currentKeyIndex.get());
         
         objectMapper.writeValue(stateFile, state);
     }
     
     private static class ApiKeyState {
-        private Map<String, Integer> dailyUsage = new HashMap<>();
-        private Map<String, LocalDateTime> lastUsageDate = new HashMap<>();
+        private Map<String, Integer> hourlyUsage = new HashMap<>();
+        private Map<String, LocalDateTime> lastUsageHour = new HashMap<>();
+        private Map<String, Boolean> keyRateLimited = new HashMap<>();
+        private Map<String, LocalDateTime> rateLimitResetTime = new HashMap<>();
         private int currentKeyIndex = 0;
         
-        public Map<String, Integer> getDailyUsage() {
-            return dailyUsage;
+        public Map<String, Integer> getHourlyUsage() {
+            return hourlyUsage;
         }
         
-        public void setDailyUsage(Map<String, Integer> dailyUsage) {
-            this.dailyUsage = dailyUsage;
+        public void setHourlyUsage(Map<String, Integer> hourlyUsage) {
+            this.hourlyUsage = hourlyUsage;
         }
         
-        public Map<String, LocalDateTime> getLastUsageDate() {
-            return lastUsageDate;
+        public Map<String, LocalDateTime> getLastUsageHour() {
+            return lastUsageHour;
         }
         
-        public void setLastUsageDate(Map<String, LocalDateTime> lastUsageDate) {
-            this.lastUsageDate = lastUsageDate;
+        public void setLastUsageHour(Map<String, LocalDateTime> lastUsageHour) {
+            this.lastUsageHour = lastUsageHour;
+        }
+        
+        public Map<String, Boolean> getKeyRateLimited() {
+            return keyRateLimited;
+        }
+        
+        public void setKeyRateLimited(Map<String, Boolean> keyRateLimited) {
+            this.keyRateLimited = keyRateLimited;
+        }
+        
+        public Map<String, LocalDateTime> getRateLimitResetTime() {
+            return rateLimitResetTime;
+        }
+        
+        public void setRateLimitResetTime(Map<String, LocalDateTime> rateLimitResetTime) {
+            this.rateLimitResetTime = rateLimitResetTime;
         }
         
         public int getCurrentKeyIndex() {

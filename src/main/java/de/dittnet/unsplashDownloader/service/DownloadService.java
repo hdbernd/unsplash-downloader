@@ -144,7 +144,7 @@ public class DownloadService {
         };
         
         // Create downloader instance with progress callback
-        // Pass the photos directory, not the base output path
+        // Pass the photos directory - the UnsplashDownloader will create the right state path
         UnsplashDownloader downloader = new UnsplashDownloader(userPhotosDir, photoService);
         downloader.setProgressCallback(callback);
         

@@ -1,16 +1,29 @@
 # Unsplash Photo Downloader
 
-A Java application that downloads photos and their descriptions from Unsplash.com for a specified user. The application handles rate limiting, can resume interrupted downloads, and embeds photo descriptions into the image metadata.
+A comprehensive Java Spring Boot application for downloading and managing Unsplash photos. Features both command-line interface for batch downloading and a modern web interface for browsing, searching, and managing your photo collection.
 
 ## Features
 
-- Downloads all photos from a specified Unsplash user
-- Embeds photo descriptions in EXIF metadata
-- Handles API rate limits automatically
-- Can resume interrupted downloads
-- Tracks download progress
-- Maintains a backup description file
-- Supports large collections (>16000 photos)
+### Core Download Features
+- **Batch Downloads**: Download all photos from any Unsplash user
+- **Incremental Downloads**: Automatically skip already downloaded photos
+- **Robust State Management**: Resume interrupted downloads seamlessly
+- **Multiple API Key Support**: Rotate between multiple API keys for higher rate limits
+- **Rate Limit Handling**: Smart handling of demo (50/hour) and production (5000/hour) limits
+
+### Metadata & Organization  
+- **EXIF Metadata Embedding**: Photo descriptions and photographer info embedded in images
+- **Database Storage**: H2 database for fast photo metadata search and browsing
+- **Thumbnail Generation**: Automatic thumbnail creation for web interface
+- **Full-text Search**: Search photos by description, tags, or photographer
+
+### Web Interface
+- **Modern UI**: Bootstrap-based responsive interface
+- **Real-time Progress**: Live download progress with WebSocket updates
+- **Photo Browsing**: Grid view with thumbnails and detailed photo information
+- **Advanced Filtering**: Filter by photographer, tags, or search terms
+- **Collection Statistics**: View download stats and collection analytics
+- **API Key Management**: Add/remove/validate API keys through web interface
 
 ## Prerequisites
 
@@ -89,13 +102,32 @@ Build the project using Maven:
 mvn clean package
 ```
 
-This will create two JAR files in the `target` directory:
-- `unsplash-downloader-1.0-SNAPSHOT.jar`
-- `unsplash-downloader-1.0-SNAPSHOT-jar-with-dependencies.jar` (use this one)
+This creates two JAR files in the `target` directory:
+- `unsplash-downloader-1.0-SNAPSHOT.jar` - Spring Boot web application
+- `unsplash-downloader-1.0-SNAPSHOT-jar-with-dependencies.jar` - CLI-only version
 
 ## Running
 
-Use the following command to run the application:
+### Web Interface Mode (Recommended)
+Start the Spring Boot application for the full web interface:
+```bash
+mvn spring-boot:run
+# OR
+java -jar target/unsplash-downloader-1.0-SNAPSHOT.jar
+```
+
+Then open your browser to: **http://localhost:8099**
+
+Features available in web mode:
+- Modern web interface for browsing downloaded photos
+- Real-time download progress with current photo display
+- API key management through web interface
+- Full-text search and filtering
+- Collection statistics and analytics
+- Thumbnail generation
+
+### Command Line Mode  
+For CLI-only batch downloading:
 ```bash
 java -jar target/unsplash-downloader-1.0-SNAPSHOT-jar-with-dependencies.jar <username> <output_directory>
 ```
@@ -118,23 +150,103 @@ Each photo will have:
 - Photographer information embedded
 - Original Unsplash photo ID in the filename
 
-## Rate Limiting
+## Advanced Rate Limiting & API Key Management
 
-The application respects Unsplash API rate limits:
-- **Demo apps:** 50 requests per hour
-- **Production apps:** 5000 requests per hour
-- Tracks daily API requests
-- Automatically pauses when reaching the limit
-- Saves progress and resumes when limit resets
-- Configurable daily request limit (default: 50 for demo apps)
+The application provides intelligent rate limit handling with multiple API key support:
 
-## Resuming Downloads
+### Rate Limit Management
+- **Demo apps:** 50 requests per hour per API key
+- **Production apps:** 5000 requests per hour per API key
+- **Hourly Usage Tracking**: Resets automatically each hour
+- **Smart Key Rotation**: Automatically switches to next available key when limits hit
+- **Rate Limit Recovery**: Tracks when keys become available again
+
+### Multiple API Key Features
+```
+With Multiple API Keys:
+├── Key 1: 50 requests/hour → Rate limited at 12:00 PM
+├── Key 2: 50 requests/hour → Automatically switches to Key 2
+├── Key 3: 50 requests/hour → Available as backup
+└── Combined: 150 requests/hour total capacity
+```
+
+### Automatic Handling
+1. **403 Rate Limit Detection**: Instantly detects when a key hits its limit
+2. **Seamless Key Rotation**: Automatically switches to next available key
+3. **Smart Recovery**: Tracks when rate-limited keys become available again
+4. **Progress Continuation**: Downloads continue uninterrupted with key switching
+5. **Usage Statistics**: Real-time tracking of usage per key in web interface
+
+### Benefits of Multiple Keys
+- **Increased Throughput**: Multiply your hourly download capacity
+- **Uninterrupted Downloads**: No waiting for rate limit resets
+- **Fault Tolerance**: If one key fails, others continue working
+- **Optimized Usage**: Spreads load across all available keys
+
+## Incremental Downloads & State Management
+
+The application provides robust incremental downloading that intelligently handles interruptions and avoids duplicates:
+
+### How Incremental Downloads Work
+
+**1. State File Tracking (`download_state.json`)**
+- Tracks which photos have been processed for each user
+- Records download progress, metadata, and photo IDs
+- Automatically saved after each successful download
+- Prevents duplicate downloads even across multiple sessions
+
+**2. Physical File Verification**
+- Before downloading, checks if the photo file already exists on disk
+- Uses filename pattern: `{username}_{photoId}.jpg`
+- If file exists but isn't in state file, adds it to tracking
+- Ensures consistency between state records and actual files
+
+**3. API Difference Detection**
+- Compares local photo collection against Unsplash user's current photos
+- Identifies new photos added since last download
+- Only downloads photos that are missing locally
+- Skips photos that have been removed from Unsplash (keeps local copies)
+
+**4. Smart Resume Logic**
+```
+When starting a download:
+├── Load existing state file (if any)
+├── Scan output directory for existing photos
+├── Fetch current user photos from Unsplash API
+├── Calculate difference: API photos - already downloaded
+└── Download only missing photos
+```
+
+### Resuming Downloads
 
 If the download is interrupted or hits the rate limit:
-1. The progress is automatically saved
-2. Run the same command again to resume
-3. Already downloaded photos will be skipped
-4. Download continues from the last position
+1. **Automatic State Persistence**: Progress is saved after each photo
+2. **Smart Recovery**: Run the same command again to resume
+3. **Duplicate Prevention**: Already downloaded photos are automatically skipped
+4. **Robust File Checking**: Handles cases where state file is lost but photos exist
+5. **Continues from Last Position**: Resumes from the exact point of interruption
+
+### Example Scenarios
+
+**Scenario 1: Rate Limit Hit**
+```
+Downloaded: 45/120 photos → Rate limit reached
+State saved: 45 photos recorded in download_state.json
+Restart: Automatically skips first 45 photos, continues from photo 46
+```
+
+**Scenario 2: Lost State File**
+```
+Existing files: username_abc123.jpg, username_def456.jpg (no state file)
+Restart: Scans directory, rebuilds state from existing files, downloads remaining
+```
+
+**Scenario 3: User Added New Photos**
+```
+Previous download: 100 photos
+User added 5 new photos on Unsplash
+Restart: Downloads only the 5 new photos, skips existing 100
+```
 
 ## Logs
 
@@ -143,22 +255,65 @@ Logs are written to:
 - `logs/unsplash-downloader.log`
 - Daily rolling log files
 
+## Data Storage
+
+### Web Interface Mode
+- **Database**: H2 embedded database at `./unsplash-data/database/`
+- **Photos**: Stored in configurable output directory  
+- **Thumbnails**: Auto-generated at `./unsplash-data/thumbnails/`
+- **Configuration**: API keys and settings in `./unsplash-data/config/`
+- **State Files**: Download progress in `./unsplash-data/state/`
+- **Logs**: Application logs in `./unsplash-data/logs/`
+
+### CLI Mode
+- **Photos**: Stored in specified output directory
+- **Descriptions**: `descriptions.txt` containing all photo descriptions  
+- **State**: `download_state.json` tracking download progress
+- **Logs**: Console output and `logs/` directory
+
+## Database Access
+
+When running in web mode, you can access the H2 database console:
+- URL: http://localhost:8099/h2-console
+- JDBC URL: `jdbc:h2:file:./unsplash-data/database/unsplash_photos`
+- Username: `sa` (no password)
+
 ## Troubleshooting
 
-1. If you get authorization errors:
-   - Check your API key
-   - Verify the key is correctly set in environment or config.properties
+### API Key Issues
+1. **"Invalid API key" or "dummy key" warnings**:
+   - Add your real Unsplash API key through the web interface at http://localhost:8099/api-keys
+   - Make sure you're using the Access Key, not Secret Key from Unsplash
+   - Demo apps work fine - no need for production approval
 
-2. If downloads stop mid-way:
-   - This is normal if you hit the rate limit
-   - The program will save progress
-   - Try again the next day
+2. **Rate limit errors (403 Forbidden)**:
+   - Demo apps: 50 requests/hour limit
+   - Production apps: 5000 requests/hour limit  
+   - Wait for hourly reset or add multiple API keys for higher limits
 
-3. If metadata embedding fails:
-   - Check if the downloaded files are valid JPEGs
-   - The description will still be saved in descriptions.txt
+### Download Issues
+3. **Downloads stop mid-way**:
+   - Normal behavior when hitting rate limits
+   - Progress is automatically saved
+   - Resume by starting download again - already downloaded photos will be skipped
 
-4. For other issues:
-   - Check the log files in the logs directory
-   - Verify your internet connection
-   - Ensure you have write permissions in the output directory
+4. **"Photo file exists but not in state"** messages:
+   - This is normal - app is rebuilding state from existing files
+   - Ensures no duplicate downloads even if state file is lost
+
+### Technical Issues  
+5. **Database connection errors**:
+   - Check if another instance is running
+   - Delete `*.lock.db` files in the database directory
+
+6. **Port 8099 already in use**:
+   - Stop other instances or change port in `application.properties`
+
+7. **File permission errors**:
+   - Ensure write permissions in output directory
+   - Check disk space availability
+
+8. **For other issues**:
+   - Check log files in `./unsplash-data/logs/` directory
+   - Verify internet connection
+   - Restart the application

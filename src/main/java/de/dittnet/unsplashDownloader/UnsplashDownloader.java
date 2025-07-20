@@ -119,15 +119,25 @@ public class UnsplashDownloader {
             }
 
             for (Photo photo : photos) {
+                String fileName = String.format("%s_%s.jpg", username, photo.getId());
+                File outputFile = new File(outputDir, fileName);
+                
+                // Check both state and file existence for robust incremental download
                 if (state.getDownloadedPhotos().contains(photo.getId())) {
-                    logger.debug("Skipping already downloaded photo: {}", photo.getId());
+                    logger.debug("Skipping already downloaded photo (in state): {}", photo.getId());
+                    continue;
+                }
+                
+                if (outputFile.exists()) {
+                    logger.info("Photo file exists but not in state, adding to state: {}", fileName);
+                    state.getDownloadedPhotos().add(photo.getId());
+                    saveState();
                     continue;
                 }
 
                 // Notify progress callback - photo started
                 if (progressCallback != null) {
-                    String filename = username + "_" + photo.getId() + ".jpg";
-                    progressCallback.onPhotoStarted(photo.getId(), filename, state.getDownloadedPhotos().size(), state.getTotalPhotos());
+                    progressCallback.onPhotoStarted(photo.getId(), fileName, state.getDownloadedPhotos().size(), state.getTotalPhotos());
                 }
 
                 try {
@@ -137,8 +147,7 @@ public class UnsplashDownloader {
                     
                     // Notify progress callback - photo completed
                     if (progressCallback != null) {
-                        String filename = username + "_" + photo.getId() + ".jpg";
-                        progressCallback.onPhotoCompleted(photo.getId(), filename, state.getDownloadedPhotos().size() - 1, state.getTotalPhotos());
+                        progressCallback.onPhotoCompleted(photo.getId(), fileName, state.getDownloadedPhotos().size() - 1, state.getTotalPhotos());
                     }
                 } catch (Exception e) {
                     logger.error("Failed to download photo: {}", photo.getId(), e);
@@ -149,15 +158,16 @@ public class UnsplashDownloader {
                     }
                 }
 
-                logger.info("Progress: {}/{} photos downloaded (Total API usage: {}/{})", 
+                logger.info("Progress: {}/{} photos downloaded (Total API usage: {}/{}, Available keys: {})", 
                     state.getDownloadedPhotos().size(), 
                     state.getTotalPhotos(),
-                    apiKeyManager.getTotalDailyUsage(),
-                    apiKeyManager.getMaxDailyLimit());
+                    apiKeyManager.getTotalHourlyUsage(),
+                    apiKeyManager.getMaxHourlyLimit(),
+                    apiKeyManager.getAvailableKeysCount());
 
                 // Check rate limit after each download
                 if (!apiKeyManager.hasAvailableKey()) {
-                    logger.info("All API keys have reached daily limit. Progress saved. Resuming tomorrow.");
+                    logger.info("All API keys have reached hourly limit. Progress saved. Next reset: {}", apiKeyManager.getNextResetTime());
                     return;
                 }
             }
@@ -210,6 +220,14 @@ public class UnsplashDownloader {
             throw new IOException("No API keys available - all have reached daily limit");
         }
         
+        // Check for dummy keys at runtime
+        if (isDummyKey(accessToken)) {
+            throw new IOException("❌ Cannot download with dummy/test API key: '" + accessToken + 
+                                "'. Please add your real Unsplash API key through the web interface at http://localhost:8099");
+        }
+        
+        logger.info("Fetching photos with API key (length: {})", accessToken.length());
+        
         Request request = new Request.Builder()
                 .url(url)
                 .header("Authorization", "Client-ID " + accessToken)
@@ -217,7 +235,25 @@ public class UnsplashDownloader {
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Failed to fetch photos: " + response);
+                if (response.code() == 403) {
+                    // Mark this key as rate limited
+                    apiKeyManager.markKeyRateLimited(accessToken);
+                    
+                    // Check if other keys are available
+                    int availableKeys = apiKeyManager.getAvailableKeysCount();
+                    if (availableKeys > 0) {
+                        logger.warn("⚠️ Rate limit hit for current API key. Switching to next available key ({} remaining).", availableKeys);
+                        // Recursively try with next available key
+                        return fetchPhotoPage(username, page);
+                    } else {
+                        logger.warn("⚠️ All API keys have hit rate limits. Demo apps are limited to 50 requests/hour per key.");
+                        logger.warn("⚠️ Next reset time: {}. Consider adding more API keys or waiting.", apiKeyManager.getNextResetTime());
+                        throw new IOException("All API keys rate limited (403 Forbidden). Demo apps have 50 requests/hour limit per key. Next reset: " + apiKeyManager.getNextResetTime());
+                    }
+                } else {
+                    logger.error("API request failed: {} - {} for URL: {}", response.code(), response.message(), url);
+                    throw new IOException("Failed to fetch photos: " + response);
+                }
             }
 
             apiKeyManager.recordUsage(accessToken);
@@ -234,6 +270,25 @@ public class UnsplashDownloader {
             Thread.currentThread().interrupt();
             throw new IOException("Download interrupted", e);
         }
+    }
+    
+    private boolean isDummyKey(String apiKey) {
+        if (apiKey == null) {
+            return true;
+        }
+        
+        String key = apiKey.trim().toLowerCase();
+        
+        // Check for common dummy/test key patterns
+        return key.contains("dummy") || 
+               key.contains("test") || 
+               key.contains("your_") || 
+               key.contains("example") || 
+               key.contains("placeholder") ||
+               key.contains("sample") ||
+               key.equals("your_api_key_here") ||
+               key.equals("your_access_token_here") ||
+               key.startsWith("dummy_test_key");
     }
 
     private void downloadPhoto(Photo photo, String username) throws IOException {
