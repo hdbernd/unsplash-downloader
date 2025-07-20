@@ -109,16 +109,31 @@ public class ApiKeyService {
     
     public boolean validateApiKey(String apiKey) {
         if (apiKey == null || apiKey.trim().isEmpty()) {
+            logger.warn("API key is null or empty");
             return false;
         }
         
+        String trimmedKey = apiKey.trim();
+        logger.info("Validating API key (length: {})", trimmedKey.length());
+        
         try {
+            // Use /photos endpoint instead of /me for Client-ID validation
+            // /me requires OAuth2 Bearer token, but /photos works with Client-ID
             Request request = new Request.Builder()
-                    .url(API_BASE_URL + "/me")
-                    .header("Authorization", "Client-ID " + apiKey.trim())
+                    .url(API_BASE_URL + "/photos?page=1&per_page=1")
+                    .header("Authorization", "Client-ID " + trimmedKey)
                     .build();
             
             try (Response response = client.newCall(request).execute()) {
+                logger.info("API validation response: {} - {}", response.code(), response.message());
+                
+                if (!response.isSuccessful()) {
+                    String responseBody = response.body() != null ? response.body().string() : "No response body";
+                    logger.warn("API key validation failed. Response: {}", responseBody);
+                } else {
+                    logger.info("API key validation successful for Client-ID access");
+                }
+                
                 return response.isSuccessful();
             }
         } catch (Exception e) {
