@@ -2,6 +2,8 @@ package de.dittnet.unsplashDownloader;
 
 import de.dittnet.unsplashDownloader.model.Photo;
 import de.dittnet.unsplashDownloader.model.DownloadState;
+import de.dittnet.unsplashDownloader.service.PhotoService;
+import de.dittnet.unsplashDownloader.service.DownloadService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -26,17 +28,34 @@ public class UnsplashDownloader {
     private static final int PER_PAGE = 30;
     private static final int MAX_DAILY_REQUESTS = 500; // Adjust based on your API plan
     
-    private final String accessToken;
+    private final ApiKeyManager apiKeyManager;
     private final OkHttpClient client;
     private final ObjectMapper objectMapper;
     private final String outputDir;
+    private final String baseOutputDir;
     private final ImageMetadataHandler metadataHandler;
     private final File stateFile;
+    private final File descriptionsFile;
     private DownloadState state;
+    private final PhotoService photoService;
+    private DownloadService.DownloadProgressCallback progressCallback;
 
-    public UnsplashDownloader(String accessToken, String outputDir) {
-        this.accessToken = accessToken;
-        this.outputDir = outputDir;
+    public UnsplashDownloader(String outputDir) throws IOException {
+        this(outputDir, null);
+    }
+    
+    public UnsplashDownloader(String outputDir, PhotoService photoService) throws IOException {
+        this.outputDir = outputDir; // This is the photos directory
+        
+        // Extract base output directory (parent of photos directory)
+        File photosDir = new File(outputDir);
+        this.baseOutputDir = photosDir.getParent() != null ? photosDir.getParent() : outputDir;
+        
+        // Create system directory for state files
+        File systemDir = new File(baseOutputDir, ".unsplash-downloader");
+        systemDir.mkdirs();
+        
+        this.apiKeyManager = new ApiKeyManager(systemDir.getAbsolutePath());
         this.client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -45,10 +64,16 @@ public class UnsplashDownloader {
                 
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         this.metadataHandler = new ImageMetadataHandler();
-        this.stateFile = new File(outputDir, "download_state.json");
+        this.stateFile = new File(systemDir, "download_state.json");
+        this.descriptionsFile = new File(baseOutputDir, "descriptions.txt");
+        this.photoService = photoService;
         
         // Create output directory if it doesn't exist
         new File(outputDir).mkdirs();
+    }
+    
+    public void setProgressCallback(DownloadService.DownloadProgressCallback callback) {
+        this.progressCallback = callback;
     }
 
     public void downloadUserPhotos(String username) throws IOException {
@@ -60,6 +85,11 @@ public class UnsplashDownloader {
             state.setTotalPhotos(totalPhotos);
             saveState();
             logger.info("Total photos to download: {}", totalPhotos);
+            
+            // Notify progress callback
+            if (progressCallback != null) {
+                progressCallback.onTotalPhotosDiscovered(totalPhotos);
+            }
         }
 
         // Calculate remaining photos
@@ -76,8 +106,8 @@ public class UnsplashDownloader {
 
         while (hasMore) {
             // Check if we've hit the daily limit
-            if (shouldPauseDueToRateLimit()) {
-                logger.info("Daily rate limit reached. Resuming tomorrow.");
+            if (!apiKeyManager.hasAvailableKey()) {
+                logger.info("All API keys have reached daily limit. Resuming tomorrow.");
                 return;
             }
 
@@ -94,17 +124,40 @@ public class UnsplashDownloader {
                     continue;
                 }
 
-                downloadPhoto(photo, username);
-                state.getDownloadedPhotos().add(photo.getId());
-                saveState();
+                // Notify progress callback - photo started
+                if (progressCallback != null) {
+                    String filename = username + "_" + photo.getId() + ".jpg";
+                    progressCallback.onPhotoStarted(photo.getId(), filename, state.getDownloadedPhotos().size(), state.getTotalPhotos());
+                }
 
-                logger.info("Progress: {}/{} photos downloaded", 
+                try {
+                    downloadPhoto(photo, username);
+                    state.getDownloadedPhotos().add(photo.getId());
+                    saveState();
+                    
+                    // Notify progress callback - photo completed
+                    if (progressCallback != null) {
+                        String filename = username + "_" + photo.getId() + ".jpg";
+                        progressCallback.onPhotoCompleted(photo.getId(), filename, state.getDownloadedPhotos().size() - 1, state.getTotalPhotos());
+                    }
+                } catch (Exception e) {
+                    logger.error("Failed to download photo: {}", photo.getId(), e);
+                    
+                    // Notify progress callback - error
+                    if (progressCallback != null) {
+                        progressCallback.onError(photo.getId(), e.getMessage());
+                    }
+                }
+
+                logger.info("Progress: {}/{} photos downloaded (Total API usage: {}/{})", 
                     state.getDownloadedPhotos().size(), 
-                    state.getTotalPhotos());
+                    state.getTotalPhotos(),
+                    apiKeyManager.getTotalDailyUsage(),
+                    apiKeyManager.getMaxDailyLimit());
 
                 // Check rate limit after each download
-                if (shouldPauseDueToRateLimit()) {
-                    logger.info("Daily rate limit reached. Progress saved. Resuming tomorrow.");
+                if (!apiKeyManager.hasAvailableKey()) {
+                    logger.info("All API keys have reached daily limit. Progress saved. Resuming tomorrow.");
                     return;
                 }
             }
@@ -115,6 +168,12 @@ public class UnsplashDownloader {
 
     private int getTotalPhotos(String username) throws IOException {
         String url = String.format("%s/users/%s", API_BASE_URL, username);
+        
+        String accessToken = apiKeyManager.getNextAvailableKey();
+        if (accessToken == null) {
+            throw new IOException("No API keys available - all have reached daily limit");
+        }
+        
         Request request = new Request.Builder()
             .url(url)
             .header("Authorization", "Client-ID " + accessToken)
@@ -130,7 +189,7 @@ public class UnsplashDownloader {
                 new TypeReference<Map<String, Object>>() {}
             );
 
-            incrementRequestCount();
+            apiKeyManager.recordUsage(accessToken);
 
             // The total_photos field is directly in the user info object
             Object totalPhotos = userInfo.get("total_photos");
@@ -146,6 +205,11 @@ public class UnsplashDownloader {
         String url = String.format("%s/users/%s/photos?page=%d&per_page=%d", 
                 API_BASE_URL, username, page, PER_PAGE);
 
+        String accessToken = apiKeyManager.getNextAvailableKey();
+        if (accessToken == null) {
+            throw new IOException("No API keys available - all have reached daily limit");
+        }
+        
         Request request = new Request.Builder()
                 .url(url)
                 .header("Authorization", "Client-ID " + accessToken)
@@ -156,7 +220,7 @@ public class UnsplashDownloader {
                 throw new IOException("Failed to fetch photos: " + response);
             }
 
-            incrementRequestCount();
+            apiKeyManager.recordUsage(accessToken);
             
             List<Photo> photos = objectMapper.readValue(
                     response.body().string(),
@@ -192,10 +256,19 @@ public class UnsplashDownloader {
 
         // Write description to the log file
         writeDescription(photo);
+        
+        // Save to database if service is available
+        if (photoService != null) {
+            try {
+                photoService.savePhoto(photo, outputFile.getAbsolutePath(), username);
+            } catch (Exception e) {
+                logger.error("Failed to save photo to database {}: {}", fileName, e.getMessage());
+            }
+        }
     }
 
     private void writeDescription(Photo photo) {
-        File descFile = new File(outputDir, "descriptions.txt");
+        File descFile = descriptionsFile;
         try (PrintWriter writer = new PrintWriter(new FileWriter(descFile, true))) {
             writer.printf("Photo ID: %s%n", photo.getId());
             writer.printf("Description: %s%n", photo.getDescription());
@@ -233,24 +306,7 @@ public class UnsplashDownloader {
         objectMapper.writeValue(stateFile, state);
     }
 
-    private void incrementRequestCount() {
-        LocalDateTime now = LocalDateTime.now();
-        if (!now.toLocalDate().equals(state.getRequestCountDate().toLocalDate())) {
-            // Reset counter for new day
-            state.setDailyRequestCount(0);
-            state.setRequestCountDate(now);
-        }
-        state.setDailyRequestCount(state.getDailyRequestCount() + 1);
-    }
-
-    private boolean shouldPauseDueToRateLimit() {
-        LocalDateTime now = LocalDateTime.now();
-        if (!now.toLocalDate().equals(state.getRequestCountDate().toLocalDate())) {
-            // New day, reset counter
-            state.setDailyRequestCount(0);
-            state.setRequestCountDate(now);
-            return false;
-        }
-        return state.getDailyRequestCount() >= MAX_DAILY_REQUESTS;
+    public ApiKeyManager getApiKeyManager() {
+        return apiKeyManager;
     }
 }

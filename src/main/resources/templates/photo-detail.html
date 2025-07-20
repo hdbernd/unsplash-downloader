@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="${photo.title != null ? photo.title : 'Photo Detail'}">Photo Detail</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Back Navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Photo Detail</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Photo -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <img th:src="@{'/api/photos/' + ${photo.id} + '/image'}" 
+                         class="card-img-top" 
+                         th:alt="${photo.description}"
+                         style="max-height: 600px; object-fit: contain;">
+                </div>
+            </div>
+
+            <!-- Photo Details -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${photo.title != null ? photo.title : 'Untitled'}">Photo Title</h5>
+                        
+                        <div class="mb-3">
+                            <h6><i class="bi bi-person"></i> Photographer</h6>
+                            <p class="mb-0" th:text="${photo.photographerName}">Photographer Name</p>
+                            <small class="text-muted" th:if="${photo.photographerUsername}">
+                                @<span th:text="${photo.photographerUsername}">username</span>
+                            </small>
+                        </div>
+
+                        <div class="mb-3" th:if="${photo.description}">
+                            <h6><i class="bi bi-card-text"></i> Description</h6>
+                            <p th:text="${photo.description}">Photo description</p>
+                        </div>
+
+                        <div class="mb-3" th:if="${photo.tags != null and !photo.tags.isEmpty()}">
+                            <h6><i class="bi bi-tags"></i> Tags</h6>
+                            <div>
+                                <span th:each="tag : ${photo.tags}" class="badge bg-secondary me-1 mb-1" th:text="${tag.tagTitle}">Tag</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6><i class="bi bi-info-circle"></i> Details</h6>
+                            <ul class="list-unstyled">
+                                <li th:if="${photo.imageWidth != null and photo.imageHeight != null}">
+                                    <strong>Dimensions:</strong> <span th:text="${photo.imageWidth}">0</span> × <span th:text="${photo.imageHeight}">0</span>
+                                </li>
+                                <li th:if="${photo.color}">
+                                    <strong>Color:</strong> 
+                                    <span class="badge" th:style="'background-color: ' + ${photo.color}" th:text="${photo.color}">#000000</span>
+                                </li>
+                                <li th:if="${photo.likes != null}">
+                                    <strong>Likes:</strong> <span th:text="${photo.likes}">0</span>
+                                </li>
+                                <li th:if="${photo.downloadDate}">
+                                    <strong>Downloaded:</strong> <span th:text="${#temporals.format(photo.downloadDate, 'yyyy-MM-dd HH:mm')}">Date</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6><i class="bi bi-link-45deg"></i> Actions</h6>
+                            <div class="btn-group" role="group">
+                                <a th:href="@{'/api/photos/' + ${photo.id} + '/image'}" 
+                                   class="btn btn-primary" target="_blank">
+                                    <i class="bi bi-download"></i> Download
+                                </a>
+                                <a th:href="@{/(photographer=${photo.photographerName})}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="bi bi-person"></i> More by this photographer
+                                </a>
+                            </div>
+                        </div>
+
+                        <div th:if="${photo.unsplashUrl}">
+                            <a th:href="${photo.unsplashUrl}" class="btn btn-outline-dark" target="_blank">
+                                <i class="bi bi-box-arrow-up-right"></i> View on Unsplash
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Photos by Same Photographer -->
+        <div class="mt-5">
+            <h4>More photos by <span th:text="${photo.photographerName}">photographer</span></h4>
+            <div id="related-photos" class="row">
+                <!-- This would be populated via JavaScript/AJAX -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load related photos
+        document.addEventListener('DOMContentLoaded', function() {
+            const photographerName = /*[[${photo.photographerName}]]*/ '';
+            const currentPhotoId = /*[[${photo.id}]]*/ '';
+            
+            fetch(`/api/photos/photographer/${encodeURIComponent(photographerName)}?size=6`)
+                .then(response => response.json())
+                .then(data => {
+                    const relatedPhotos = data.content.filter(p => p.id !== currentPhotoId);
+                    const container = document.getElementById('related-photos');
+                    
+                    if (relatedPhotos.length === 0) {
+                        container.innerHTML = '<p class="text-muted">No other photos by this photographer.</p>';
+                        return;
+                    }
+                    
+                    relatedPhotos.forEach(photo => {
+                        const photoDiv = document.createElement('div');
+                        photoDiv.className = 'col-md-2 mb-3';
+                        photoDiv.innerHTML = `
+                            <div class="card photo-card" data-photo-id="${photo.id}" style="cursor: pointer;">
+                                <img src="/api/photos/${photo.id}/thumbnail" 
+                                     class="card-img-top" 
+                                     style="height: 120px; object-fit: cover;"
+                                     alt="${photo.description || 'Photo'}">
+                                <div class="card-body p-2">
+                                    <small class="text-muted">${photo.title || 'Untitled'}</small>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(photoDiv);
+                    });
+                    
+                    // Add click handlers
+                    container.querySelectorAll('.photo-card').forEach(card => {
+                        card.addEventListener('click', function() {
+                            const photoId = this.dataset.photoId;
+                            window.location.href = `/photo/${photoId}`;
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading related photos:', error);
+                    document.getElementById('related-photos').innerHTML = '<p class="text-muted">Error loading related photos.</p>';
+                });
+        });
+    </script>
+</body>
+</html>
