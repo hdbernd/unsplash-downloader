@@ -18,6 +18,23 @@ A Java application that downloads photos and their descriptions from Unsplash.co
 - Maven
 - Unsplash API access token (get it from https://unsplash.com/developers)
 
+### Unsplash API Keys: Demo vs Production
+
+**Demo Apps (Development Mode):**
+- ✅ **Available immediately** after creating your Unsplash app
+- ✅ **Full API access** to all public endpoints
+- ⚠️ **Limited to 50 requests per hour**
+- ✅ **Perfect for testing and personal use**
+- Uses Client-ID authentication with your Access Key
+
+**Production Apps:**
+- 🔄 **Requires approval process** (5 business days)
+- 📸 **Must submit screenshots** showing proper attribution
+- 🚀 **5000 requests per hour** rate limit
+- 🏢 **Intended for commercial applications**
+
+**For this application:** Demo apps work perfectly! The 50 requests/hour limit is sufficient for downloading photos in batches.
+
 ## Project Setup
 
 1. Clone or download the project
@@ -104,10 +121,12 @@ Each photo will have:
 ## Rate Limiting
 
 The application respects Unsplash API rate limits:
+- **Demo apps:** 50 requests per hour
+- **Production apps:** 5000 requests per hour
 - Tracks daily API requests
 - Automatically pauses when reaching the limit
-- Saves progress and resumes the next day
-- Configurable daily request limit (default: 50)
+- Saves progress and resumes when limit resets
+- Configurable daily request limit (default: 50 for demo apps)
 
 ## Resuming Downloads
 
