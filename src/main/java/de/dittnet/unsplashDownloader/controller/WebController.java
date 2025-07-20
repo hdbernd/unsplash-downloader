@@ -108,9 +108,15 @@ public class WebController {
         
         // Get popular tags with counts for better display
         List<TagStats> popularTags = photoService.getPopularTags(100);
+        
+        // Also provide regular tags list for backward compatibility
+        List<String> tags = popularTags.stream()
+            .map(TagStats::getTagName)
+            .collect(Collectors.toList());
             
         model.addAttribute("photographers", photographers);
         model.addAttribute("popularTags", popularTags);
+        model.addAttribute("tags", tags);
         
         return "stats";
     }
