@@ -5634,3 +5634,816 @@ java.io.IOException: No API keys found. Please set UNSPLASH_ACCESS_TOKENS enviro
 2025-07-20 18:05:40.526 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1572/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
 2025-07-20 18:05:40.531 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
 2025-07-20 18:05:40.531 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:05:46.118 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/download", parameters={}
+2025-07-20 18:05:46.119 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.DownloadController#downloadPage(Model)
+2025-07-20 18:05:46.119 [http-nio-8099-exec-3] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:05:46.124 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:05:46.129 [http-nio-8099-exec-1] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - WebSocketServerSockJsSession[id=f5uvgamk] closed with CloseStatus[code=1000, reason=null]
+2025-07-20 18:05:46.129 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - Clearing session f5uvgamk
+2025-07-20 18:05:46.129 [clientInboundChannel-47] DEBUG org.springframework.web.SimpLogging - Processing DISCONNECT session=f5uvgamk
+2025-07-20 18:05:46.130 [clientOutboundChannel-32] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true}, simpSessionId=f5uvgamk}], simpSessionId=f5uvgamk}]
+2025-07-20 18:05:46.143 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/info?t=1753027546142", parameters={masked}
+2025-07-20 18:05:46.144 [http-nio-8099-exec-7] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@405a296e
+2025-07-20 18:05:46.144 [http-nio-8099-exec-7] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/info?t=1753027546142
+2025-07-20 18:05:46.144 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:05:46.145 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/038/rv5u1bxa/websocket", parameters={}
+2025-07-20 18:05:46.146 [http-nio-8099-exec-9] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@405a296e
+2025-07-20 18:05:46.146 [http-nio-8099-exec-9] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/038/rv5u1bxa/websocket
+2025-07-20 18:05:46.146 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 101 SWITCHING_PROTOCOLS
+2025-07-20 18:05:46.147 [http-nio-8099-exec-9] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - New WebSocketServerSockJsSession[id=rv5u1bxa]
+2025-07-20 18:05:46.148 [clientInboundChannel-50] DEBUG org.springframework.web.SimpLogging - Processing CONNECT session=rv5u1bxa
+2025-07-20 18:05:46.149 [clientInboundChannel-53] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-progress id=sub-0 session=rv5u1bxa
+2025-07-20 18:05:46.149 [clientInboundChannel-56] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-history id=sub-1 session=rv5u1bxa
+2025-07-20 18:05:46.358 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:46.358 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:05:46.358 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1573/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:05:46.371 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:46.371 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:05:47.540 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:47.540 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:05:47.540 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1574/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:05:47.551 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:47.551 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:05:52.355 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/stats", parameters={}
+2025-07-20 18:05:52.355 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.WebController#stats(Model)
+2025-07-20 18:05:52.377 [http-nio-8099-exec-5] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:05:52.393 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:05:52.400 [http-nio-8099-exec-10] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - WebSocketServerSockJsSession[id=rv5u1bxa] closed with CloseStatus[code=1000, reason=null]
+2025-07-20 18:05:52.400 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - Clearing session rv5u1bxa
+2025-07-20 18:05:52.400 [clientInboundChannel-59] DEBUG org.springframework.web.SimpLogging - Processing DISCONNECT session=rv5u1bxa
+2025-07-20 18:05:52.400 [clientOutboundChannel-22] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true}, simpSessionId=rv5u1bxa}], simpSessionId=rv5u1bxa}]
+2025-07-20 18:05:52.406 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/photographer/Bernd%20%F0%9F%93%B7%20Dittrich?size=1", parameters={masked}
+2025-07-20 18:05:52.406 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotosByPhotographer(String, int, int)
+2025-07-20 18:05:52.431 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-07-20 18:05:52.431 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1573 containing de.dittnet.unsplashDownloader.entity.PhotoEntity instances]
+2025-07-20 18:05:52.440 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:05:52.895 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:52.895 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1575/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:05:52.905 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:54.295 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:54.296 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1576/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:05:54.306 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:55.339 [MessageBroker-2] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Closed 1 sessions: [f5uvgamk]
+2025-07-20 18:05:58.226 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:58.226 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1577/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:05:58.235 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:05:59.999 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:00.000 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1578/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:00.012 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:00.340 [MessageBroker-2] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Closed 1 sessions: [rv5u1bxa]
+2025-07-20 18:06:04.192 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:04.192 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1579/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:04.207 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:05.616 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:05.618 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1580/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:05.624 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:10.022 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:10.023 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1581/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:10.035 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:11.598 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:11.598 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1582/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:11.609 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:16.044 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:16.044 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1583/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:16.051 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:16.223 [http-nio-8099-exec-2] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:06:16.247 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:06:17.503 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:17.504 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1584/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:17.509 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:19.186 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:19.186 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1585/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:19.191 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:20.756 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:20.756 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1586/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:20.762 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:22.110 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:22.111 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1587/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:22.118 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:23.938 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:23.939 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1588/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:23.965 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:27.139 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:27.139 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1589/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:27.146 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:29.860 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:29.860 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1590/17800 photos downloaded (Total API usage: 53/200, Available keys: 3)
+2025-07-20 18:06:29.860 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:06:31.519 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:33.415 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:33.416 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1591/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:33.435 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:34.280 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:34.280 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1592/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:34.288 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:36.293 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:36.293 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1593/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:36.304 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:38.167 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:38.167 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1594/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:38.179 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:39.841 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:39.841 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1595/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:39.852 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:41.619 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:41.619 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1596/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:41.625 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:43.813 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:43.813 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1597/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:43.820 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:45.309 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:45.309 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1598/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:45.315 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:47.005 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:47.005 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1599/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:47.049 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:49.011 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:49.011 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1600/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:49.017 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:51.269 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:51.269 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1601/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:51.278 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:06:51.952 [SpringApplicationShutdownHook] DEBUG org.springframework.web.SimpLogging - clientOutboundChannel removed SubProtocolWebSocketHandler[StompSubProtocolHandler[v10.stomp, v11.stomp, v12.stomp]]
+2025-07-20 18:06:51.956 [SpringApplicationShutdownHook] DEBUG org.springframework.web.SimpLogging - clientInboundChannel removed WebSocketAnnotationMethodMessageHandler[prefixes=[/app/]]
+2025-07-20 18:06:51.956 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2025-07-20 18:06:51.956 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6a225642]]
+2025-07-20 18:06:51.956 [SpringApplicationShutdownHook] DEBUG org.springframework.web.SimpLogging - clientInboundChannel removed SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6a225642]
+2025-07-20 18:06:51.956 [SpringApplicationShutdownHook] DEBUG org.springframework.web.SimpLogging - brokerChannel removed SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6a225642]
+2025-07-20 18:06:51.956 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2025-07-20 18:06:51.956 [SpringApplicationShutdownHook] DEBUG org.springframework.web.SimpLogging - clientInboundChannel removed UserDestinationMessageHandler[DefaultUserDestinationResolver[prefix=/user/]]
+2025-07-20 18:06:51.956 [SpringApplicationShutdownHook] DEBUG org.springframework.web.SimpLogging - brokerChannel removed UserDestinationMessageHandler[DefaultUserDestinationResolver[prefix=/user/]]
+2025-07-20 18:06:52.876 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1602/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:54.846 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1603/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:06:57.460 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1604/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:07:00.425 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1605/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:07:02.080 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1606/17800 photos downloaded (Total API usage: 54/200, Available keys: 3)
+2025-07-20 18:07:02.972 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-20 18:07:02.974 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-07-20 18:07:03.188 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-07-20 18:07:10.320 [main] INFO  d.d.u.UnsplashDownloaderApplication - Starting UnsplashDownloaderApplication using Java 21.0.8 with PID 67080 (/Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/target/classes started by D034227 in /Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader)
+2025-07-20 18:07:10.321 [main] INFO  d.d.u.UnsplashDownloaderApplication - No active profile set, falling back to 1 default profile: "default"
+2025-07-20 18:07:10.455 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-20 18:07:10.471 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 13 ms. Found 1 JPA repository interface.
+2025-07-20 18:07:10.648 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8099 (http)
+2025-07-20 18:07:10.651 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8099"]
+2025-07-20 18:07:10.651 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-07-20 18:07:10.651 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.17]
+2025-07-20 18:07:10.668 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-07-20 18:07:10.668 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 335 ms
+2025-07-20 18:07:10.672 [main] INFO  d.d.u.config.DatabaseConfig - Configuring database with URL: jdbc:h2:file:./unsplash-data/database/unsplash_photos
+2025-07-20 18:07:10.677 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-07-20 18:07:10.743 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./unsplash-data/database/unsplash_photos user=SA
+2025-07-20 18:07:10.744 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-07-20 18:07:10.747 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./unsplash-data/database/unsplash_photos'
+2025-07-20 18:07:10.785 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-20 18:07:10.803 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.1.Final
+2025-07-20 18:07:10.811 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-07-20 18:07:10.867 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-20 18:07:10.879 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-20 18:07:11.109 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-20 18:07:11.128 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-20 18:07:11.270 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-07-20 18:07:11.492 [main] INFO  d.d.u.config.StorageConfig - Reset to fallback directory: ./unsplash-data
+2025-07-20 18:07:11.509 [main] INFO  d.d.u.service.UserSettingsService - Loaded system user settings from /Users/D034227/Documents/privateProjects/unsplashDownloader/unsplash-downloader/./unsplash-data/config/user_settings.json
+2025-07-20 18:07:11.510 [main] INFO  d.d.u.config.StorageConfig - Set user-defined base directory to: /Volumes/photo/unsplashMirror/.unsplash-downloader
+2025-07-20 18:07:11.646 [main] INFO  d.d.u.service.UserSettingsService - Switched to user-defined directory: /Volumes/photo/unsplashMirror
+2025-07-20 18:07:11.674 [main] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Patterns [/ws/**] in 'stompWebSocketHandlerMapping'
+2025-07-20 18:07:11.685 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-20 18:07:11.692 [main] DEBUG o.s.w.s.m.WebSocketAnnotationMethodMessageHandler - 
+	d.d.u.c.ApiKeyController:
+	
+2025-07-20 18:07:11.693 [main] DEBUG o.s.w.s.m.WebSocketAnnotationMethodMessageHandler - 
+	d.d.u.c.DownloadController:
+	
+2025-07-20 18:07:11.693 [main] DEBUG o.s.w.s.m.WebSocketAnnotationMethodMessageHandler - 
+	d.d.u.c.PhotoController:
+	
+2025-07-20 18:07:11.693 [main] DEBUG o.s.w.s.m.WebSocketAnnotationMethodMessageHandler - 
+	d.d.u.c.SettingsController:
+	
+2025-07-20 18:07:11.693 [main] DEBUG o.s.w.s.m.WebSocketAnnotationMethodMessageHandler - 
+	d.d.u.c.WebController:
+	
+2025-07-20 18:07:11.694 [main] DEBUG o.s.w.s.m.WebSocketAnnotationMethodMessageHandler - 
+	o.s.b.a.w.s.e.BasicErrorController:
+	
+2025-07-20 18:07:11.708 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2025-07-20 18:07:11.727 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 41 mappings in 'requestMappingHandlerMapping'
+2025-07-20 18:07:11.736 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-07-20 18:07:11.743 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-07-20 18:07:11.753 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-07-20 18:07:11.784 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8099"]
+2025-07-20 18:07:11.796 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8099 (http) with context path ''
+2025-07-20 18:07:11.797 [main] DEBUG org.springframework.web.SimpLogging - clientOutboundChannel added SubProtocolWebSocketHandler[StompSubProtocolHandler[v10.stomp, v11.stomp, v12.stomp]]
+2025-07-20 18:07:11.797 [main] DEBUG org.springframework.web.SimpLogging - clientInboundChannel added WebSocketAnnotationMethodMessageHandler[prefixes=[/app/]]
+2025-07-20 18:07:11.797 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2025-07-20 18:07:11.797 [main] DEBUG org.springframework.web.SimpLogging - clientInboundChannel added SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d8b5cf6]
+2025-07-20 18:07:11.797 [main] DEBUG org.springframework.web.SimpLogging - brokerChannel added SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d8b5cf6]
+2025-07-20 18:07:11.797 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d8b5cf6]]
+2025-07-20 18:07:11.797 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2025-07-20 18:07:11.797 [main] DEBUG org.springframework.web.SimpLogging - clientInboundChannel added UserDestinationMessageHandler[DefaultUserDestinationResolver[prefix=/user/]]
+2025-07-20 18:07:11.797 [main] DEBUG org.springframework.web.SimpLogging - brokerChannel added UserDestinationMessageHandler[DefaultUserDestinationResolver[prefix=/user/]]
+2025-07-20 18:07:11.800 [main] INFO  d.d.u.UnsplashDownloaderApplication - Started UnsplashDownloaderApplication in 1.571 seconds (process running for 1.716)
+2025-07-20 18:07:13.017 [http-nio-8099-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-20 18:07:13.017 [http-nio-8099-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-07-20 18:07:13.017 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-07-20 18:07:13.017 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-07-20 18:07:13.017 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-07-20 18:07:13.018 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@5a1c0bcc
+2025-07-20 18:07:13.018 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@5e774546
+2025-07-20 18:07:13.018 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-07-20 18:07:13.018 [http-nio-8099-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-07-20 18:07:13.022 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/stats", parameters={}
+2025-07-20 18:07:13.026 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.WebController#stats(Model)
+2025-07-20 18:07:13.076 [http-nio-8099-exec-1] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:07:13.167 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:13.179 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/photographer/Bernd%20%F0%9F%93%B7%20Dittrich?size=1", parameters={masked}
+2025-07-20 18:07:13.180 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotosByPhotographer(String, int, int)
+2025-07-20 18:07:13.216 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-07-20 18:07:13.216 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1605 containing de.dittnet.unsplashDownloader.entity.PhotoEntity instances]
+2025-07-20 18:07:13.225 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:14.273 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/stats", parameters={}
+2025-07-20 18:07:14.274 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.WebController#stats(Model)
+2025-07-20 18:07:14.284 [http-nio-8099-exec-3] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:07:14.293 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:14.310 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/photographer/Bernd%20%F0%9F%93%B7%20Dittrich?size=1", parameters={masked}
+2025-07-20 18:07:14.310 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotosByPhotographer(String, int, int)
+2025-07-20 18:07:14.326 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-07-20 18:07:14.327 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1605 containing de.dittnet.unsplashDownloader.entity.PhotoEntity instances]
+2025-07-20 18:07:14.328 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:16.408 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/stats", parameters={}
+2025-07-20 18:07:16.409 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.WebController#stats(Model)
+2025-07-20 18:07:16.425 [http-nio-8099-exec-5] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:07:16.430 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:16.443 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/photographer/Bernd%20%F0%9F%93%B7%20Dittrich?size=1", parameters={masked}
+2025-07-20 18:07:16.444 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotosByPhotographer(String, int, int)
+2025-07-20 18:07:16.455 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-07-20 18:07:16.456 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1605 containing de.dittnet.unsplashDownloader.entity.PhotoEntity instances]
+2025-07-20 18:07:16.457 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:17.167 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/stats", parameters={}
+2025-07-20 18:07:17.167 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.WebController#stats(Model)
+2025-07-20 18:07:17.181 [http-nio-8099-exec-7] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:07:17.184 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:17.197 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/photographer/Bernd%20%F0%9F%93%B7%20Dittrich?size=1", parameters={masked}
+2025-07-20 18:07:17.197 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotosByPhotographer(String, int, int)
+2025-07-20 18:07:17.216 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-07-20 18:07:17.216 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1605 containing de.dittnet.unsplashDownloader.entity.PhotoEntity instances]
+2025-07-20 18:07:17.217 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:18.511 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/download", parameters={}
+2025-07-20 18:07:18.511 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.DownloadController#downloadPage(Model)
+2025-07-20 18:07:18.519 [http-nio-8099-exec-9] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:07:18.542 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:18.556 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/info?t=1753027638555", parameters={masked}
+2025-07-20 18:07:18.559 [http-nio-8099-exec-10] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:07:18.560 [http-nio-8099-exec-10] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/info?t=1753027638555
+2025-07-20 18:07:18.561 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:18.563 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/890/rx1xjv5f/websocket", parameters={}
+2025-07-20 18:07:18.563 [http-nio-8099-exec-1] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:07:18.565 [http-nio-8099-exec-1] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/890/rx1xjv5f/websocket
+2025-07-20 18:07:18.575 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 101 SWITCHING_PROTOCOLS
+2025-07-20 18:07:18.581 [http-nio-8099-exec-1] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - New WebSocketServerSockJsSession[id=rx1xjv5f]
+2025-07-20 18:07:18.587 [clientInboundChannel-2] DEBUG org.springframework.web.SimpLogging - Processing CONNECT session=rx1xjv5f
+2025-07-20 18:07:18.589 [clientInboundChannel-5] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-progress id=sub-0 session=rx1xjv5f
+2025-07-20 18:07:18.589 [clientInboundChannel-8] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-history id=sub-1 session=rx1xjv5f
+2025-07-20 18:07:19.621 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - POST "/download/start", parameters={masked}
+2025-07-20 18:07:19.622 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.DownloadController#startDownload(String, String)
+2025-07-20 18:07:19.941 [http-nio-8099-exec-3] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"STA...(truncated)
+2025-07-20 18:07:19.942 [http-nio-8099-exec-3] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:07:19.945 [http-nio-8099-exec-3] INFO  d.d.u.controller.DownloadController - Started download for user: hdbernd to path: /Volumes/photo/unsplashMirror
+2025-07-20 18:07:19.949 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-07-20 18:07:19.949 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{success=true, outputPath=/Volumes/photo/unsplashMirror, message=Download started for user: hdbernd, (truncated)...]
+2025-07-20 18:07:19.953 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:19.953 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:07:19.954 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:07:19.968 [ForkJoinPool.commonPool-worker-1] INFO  d.d.unsplashDownloader.ApiKeyManager - Looking for API keys in config file: /Volumes/photo/unsplashMirror/.unsplash-downloader/config/config.properties
+2025-07-20 18:07:19.968 [ForkJoinPool.commonPool-worker-1] INFO  d.d.unsplashDownloader.ApiKeyManager - Found config file, loading API keys...
+2025-07-20 18:07:19.994 [ForkJoinPool.commonPool-worker-1] INFO  d.d.unsplashDownloader.ApiKeyManager - Loaded 4 API key(s)
+2025-07-20 18:07:19.995 [ForkJoinPool.commonPool-worker-1] INFO  d.d.unsplashDownloader.ApiKeyManager - API Key 1: length=43, starts with 'gQsPvAwg'
+2025-07-20 18:07:19.995 [ForkJoinPool.commonPool-worker-1] INFO  d.d.unsplashDownloader.ApiKeyManager - API Key 2: length=43, starts with 'pUPpjH8o'
+2025-07-20 18:07:19.995 [ForkJoinPool.commonPool-worker-1] INFO  d.d.unsplashDownloader.ApiKeyManager - API Key 3: length=43, starts with '22E-cvTG'
+2025-07-20 18:07:19.995 [ForkJoinPool.commonPool-worker-1] INFO  d.d.unsplashDownloader.ApiKeyManager - API Key 4: length=43, starts with 'mb8Ur0b0'
+2025-07-20 18:07:20.032 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Remaining photos to download: 16194
+2025-07-20 18:07:20.033 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:21.922 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:22.341 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/", parameters={}
+2025-07-20 18:07:22.341 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.WebController#index(Model, int, int, String, String, String, String)
+2025-07-20 18:07:22.365 [http-nio-8099-exec-4] INFO  d.d.unsplashDownloader.ApiKeyManager - Looking for API keys in config file: /Volumes/photo/unsplashMirror/.unsplash-downloader/config/config.properties
+2025-07-20 18:07:22.365 [http-nio-8099-exec-4] INFO  d.d.unsplashDownloader.ApiKeyManager - Found config file, loading API keys...
+2025-07-20 18:07:22.376 [http-nio-8099-exec-4] INFO  d.d.unsplashDownloader.ApiKeyManager - Loaded 4 API key(s)
+2025-07-20 18:07:22.376 [http-nio-8099-exec-4] INFO  d.d.unsplashDownloader.ApiKeyManager - API Key 1: length=43, starts with 'gQsPvAwg'
+2025-07-20 18:07:22.376 [http-nio-8099-exec-4] INFO  d.d.unsplashDownloader.ApiKeyManager - API Key 2: length=43, starts with 'pUPpjH8o'
+2025-07-20 18:07:22.376 [http-nio-8099-exec-4] INFO  d.d.unsplashDownloader.ApiKeyManager - API Key 3: length=43, starts with '22E-cvTG'
+2025-07-20 18:07:22.376 [http-nio-8099-exec-4] INFO  d.d.unsplashDownloader.ApiKeyManager - API Key 4: length=43, starts with 'mb8Ur0b0'
+2025-07-20 18:07:23.338 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:25.061 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:26.448 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:28.195 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:29.673 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:31.091 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:32.514 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:34.200 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:35.781 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:37.194 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:38.631 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:40.053 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:41.492 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:43.060 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:44.417 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:45.768 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:47.126 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:47.639 [http-nio-8099-exec-4] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:07:47.658 [http-nio-8099-exec-5] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - WebSocketServerSockJsSession[id=rx1xjv5f] closed with CloseStatus[code=1000, reason=null]
+2025-07-20 18:07:47.658 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - Clearing session rx1xjv5f
+2025-07-20 18:07:47.659 [clientInboundChannel-11] DEBUG org.springframework.web.SimpLogging - Processing DISCONNECT session=rx1xjv5f
+2025-07-20 18:07:47.659 [clientOutboundChannel-4] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true}, simpSessionId=rx1xjv5f}], simpSessionId=rx1xjv5f}]
+2025-07-20 18:07:47.667 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:47.669 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/0GcxlKU3kTw/thumbnail", parameters={}
+2025-07-20 18:07:47.670 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:47.673 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/31pe0kPcleE/thumbnail", parameters={}
+2025-07-20 18:07:47.673 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:47.674 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/IxA5Vqk0LLY/thumbnail", parameters={}
+2025-07-20 18:07:47.674 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:47.674 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/7RTAbjGOqVQ/thumbnail", parameters={}
+2025-07-20 18:07:47.674 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/z5G7IllfVCQ/thumbnail", parameters={}
+2025-07-20 18:07:47.674 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/qsA-6emC7TE/thumbnail", parameters={}
+2025-07-20 18:07:47.674 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:47.674 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:47.674 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:48.550 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:49.520 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:49.522 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:49.523 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:49.526 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/ta--NHF4L7g/thumbnail", parameters={}
+2025-07-20 18:07:49.526 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:49.961 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:49.962 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:49.962 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:49.964 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/qHU6E-Ar3gY/thumbnail", parameters={}
+2025-07-20 18:07:49.965 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:50.005 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:50.206 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:50.207 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:50.207 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:50.209 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/xcA8lS1Qjyg/thumbnail", parameters={}
+2025-07-20 18:07:50.209 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:50.228 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:50.228 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:50.229 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:50.230 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/K4zi3rEGwP4/thumbnail", parameters={}
+2025-07-20 18:07:50.230 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:50.289 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:50.289 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:50.290 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:50.292 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/_Tqm_MNvrzw/thumbnail", parameters={}
+2025-07-20 18:07:50.292 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:50.422 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:50.422 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:50.423 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:50.425 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/e_9J0QUcd5k/thumbnail", parameters={}
+2025-07-20 18:07:50.425 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:51.340 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:51.340 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:51.340 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:51.341 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:51.342 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/Lu7QWK0rvZ0/thumbnail", parameters={}
+2025-07-20 18:07:51.342 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:51.823 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:51.823 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:51.824 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:51.826 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/MQvsGsZDbqE/thumbnail", parameters={}
+2025-07-20 18:07:51.827 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:51.863 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:51.863 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:51.864 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:51.866 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/BCtB5YOV3lk/thumbnail", parameters={}
+2025-07-20 18:07:51.866 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:51.899 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:51.900 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:51.900 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:51.902 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/z__9ZJX2-q8/thumbnail", parameters={}
+2025-07-20 18:07:51.902 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:52.391 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:52.392 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:52.392 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:52.394 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/13YDIaRtsCY/thumbnail", parameters={}
+2025-07-20 18:07:52.394 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:52.457 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:52.457 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:52.458 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:52.459 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/i1hD2WItRK0/thumbnail", parameters={}
+2025-07-20 18:07:52.460 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:52.813 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:53.526 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:53.527 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:53.527 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:53.529 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/KdGKJN88uCI/thumbnail", parameters={}
+2025-07-20 18:07:53.529 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:53.571 [MessageBroker-5] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Closed 1 sessions: [rx1xjv5f]
+2025-07-20 18:07:53.623 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:53.623 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:53.623 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:53.626 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/_nmkeIlIp3U/thumbnail", parameters={}
+2025-07-20 18:07:53.626 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:53.765 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:53.766 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:53.767 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:53.769 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/3OR1fAiZwRk/thumbnail", parameters={}
+2025-07-20 18:07:53.769 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:54.047 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:54.047 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:54.048 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:54.051 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/rmJl_GmyCIg/thumbnail", parameters={}
+2025-07-20 18:07:54.052 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:54.267 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:54.517 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:54.517 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:54.518 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:54.520 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/R97qpfra0sI/thumbnail", parameters={}
+2025-07-20 18:07:54.520 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:54.705 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:54.706 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:54.706 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:54.708 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/X_qfoSB87FM/thumbnail", parameters={}
+2025-07-20 18:07:54.709 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotoThumbnail(String)
+2025-07-20 18:07:55.021 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:55.021 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:55.021 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:55.394 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:55.395 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:55.395 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:55.610 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:55.773 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:55.773 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:55.773 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:56.060 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:56.060 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:56.061 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:56.170 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:56.170 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:56.171 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:56.752 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:image/jpeg' in response
+2025-07-20 18:07:56.753 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6,  (truncated)...]
+2025-07-20 18:07:56.753 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:07:57.507 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:07:58.920 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:00.360 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:01.905 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:03.602 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:04.950 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:06.409 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:07.926 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:09.381 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:10.826 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:11.793 [MessageBroker-2] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 12, active threads = 0, queued tasks = 0, completed tasks = 12], outboundChannel[pool size = 4, active threads = 0, queued tasks = 0, completed tasks = 4], sockJsScheduler[pool size = 12, active threads = 1, queued tasks = 1, completed tasks = 12]
+2025-07-20 18:08:12.476 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:14.002 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:15.532 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:16.916 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:18.267 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:19.921 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:21.338 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:22.762 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:24.108 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:25.508 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:27.011 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:28.385 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:29.756 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:31.138 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:32.602 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:33.968 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:35.337 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:36.752 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:37.209 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/download", parameters={}
+2025-07-20 18:08:37.209 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.DownloadController#downloadPage(Model)
+2025-07-20 18:08:37.212 [http-nio-8099-exec-9] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:08:37.241 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:08:37.265 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/info?t=1753027717263", parameters={masked}
+2025-07-20 18:08:37.265 [http-nio-8099-exec-8] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:08:37.266 [http-nio-8099-exec-8] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/info?t=1753027717263
+2025-07-20 18:08:37.266 [http-nio-8099-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:08:37.270 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/224/jn3x1ha3/websocket", parameters={}
+2025-07-20 18:08:37.270 [http-nio-8099-exec-3] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:08:37.270 [http-nio-8099-exec-3] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/224/jn3x1ha3/websocket
+2025-07-20 18:08:37.271 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 101 SWITCHING_PROTOCOLS
+2025-07-20 18:08:37.271 [http-nio-8099-exec-3] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - New WebSocketServerSockJsSession[id=jn3x1ha3]
+2025-07-20 18:08:37.272 [clientInboundChannel-14] DEBUG org.springframework.web.SimpLogging - Processing CONNECT session=jn3x1ha3
+2025-07-20 18:08:37.273 [clientInboundChannel-17] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-progress id=sub-0 session=jn3x1ha3
+2025-07-20 18:08:37.274 [clientInboundChannel-20] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-history id=sub-1 session=jn3x1ha3
+2025-07-20 18:08:38.160 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:08:39.624 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Photo file exists but not in state, adding to state: hdbernd_r1ERwpK_lBw.jpg
+2025-07-20 18:08:39.746 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:39.746 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:08:41.714 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api-keys", parameters={}
+2025-07-20 18:08:41.718 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.ApiKeyController#apiKeysPage(Model)
+2025-07-20 18:08:42.007 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:42.008 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:08:42.011 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1608/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:42.013 [http-nio-8099-exec-4] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:08:42.021 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:42.021 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:08:42.046 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:08:42.048 [http-nio-8099-exec-5] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - WebSocketServerSockJsSession[id=jn3x1ha3] closed with CloseStatus[code=1000, reason=null]
+2025-07-20 18:08:42.048 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - Clearing session jn3x1ha3
+2025-07-20 18:08:42.049 [clientInboundChannel-23] DEBUG org.springframework.web.SimpLogging - Processing DISCONNECT session=jn3x1ha3
+2025-07-20 18:08:42.049 [clientOutboundChannel-9] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true}, simpSessionId=jn3x1ha3}], simpSessionId=jn3x1ha3}]
+2025-07-20 18:08:43.468 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:43.468 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1609/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:43.473 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:45.653 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:45.654 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1610/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:45.661 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:47.741 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:47.741 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1611/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:47.746 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:48.567 [MessageBroker-6] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Closed 1 sessions: [jn3x1ha3]
+2025-07-20 18:08:49.910 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:49.911 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1612/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:49.921 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:51.706 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:51.707 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1613/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:51.714 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:53.632 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:53.632 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1614/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:53.638 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:55.765 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:55.765 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1615/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:55.769 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:57.871 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:08:57.871 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1616/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:08:57.881 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:00.374 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:00.375 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1617/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:09:00.380 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:01.769 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:01.770 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1618/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:09:01.776 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:04.031 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:04.032 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1619/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:09:04.036 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:05.558 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:05.559 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1620/17800 photos downloaded (Total API usage: 108/200, Available keys: 2)
+2025-07-20 18:09:05.559 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:09:06.996 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:08.470 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:08.471 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1621/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:08.476 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:10.648 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:10.649 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1622/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:10.655 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:12.290 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:12.290 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1623/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:12.295 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:14.625 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:14.625 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1624/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:14.630 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:15.656 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:15.656 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1625/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:15.667 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:16.599 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:16.600 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1626/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:16.605 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:18.338 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:18.338 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1627/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:18.347 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:20.041 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:20.041 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1628/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:20.053 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:22.017 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:22.017 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1629/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:22.025 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:25.951 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:25.952 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1630/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:25.957 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:27.737 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:27.737 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1631/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:27.742 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:28.803 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:28.804 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1632/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:28.815 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:30.635 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:30.635 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1633/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:30.640 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:33.250 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:33.250 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1634/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:33.262 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:34.866 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:34.866 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1635/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:34.873 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:36.193 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:36.194 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1636/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:36.205 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:37.147 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:37.147 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1637/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:37.152 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:38.742 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:38.743 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1638/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:38.748 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:40.277 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:40.277 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1639/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:40.288 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:44.118 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:44.119 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1640/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:44.125 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:45.572 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:45.572 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1641/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:45.583 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:48.497 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:48.497 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1642/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:48.550 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:50.306 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api-keys", parameters={}
+2025-07-20 18:09:50.307 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.ApiKeyController#apiKeysPage(Model)
+2025-07-20 18:09:50.434 [http-nio-8099-exec-2] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:09:50.445 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:09:50.731 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:50.732 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1643/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:50.739 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:53.555 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:53.556 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1644/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:53.565 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:54.795 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api-keys", parameters={}
+2025-07-20 18:09:54.796 [http-nio-8099-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.ApiKeyController#apiKeysPage(Model)
+2025-07-20 18:09:54.803 [http-nio-8099-exec-10] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:09:54.814 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:09:56.007 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:56.007 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1645/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:56.012 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:57.399 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/download", parameters={}
+2025-07-20 18:09:57.400 [http-nio-8099-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.DownloadController#downloadPage(Model)
+2025-07-20 18:09:57.402 [http-nio-8099-exec-4] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:09:57.413 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:09:57.437 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/info?t=1753027797435", parameters={masked}
+2025-07-20 18:09:57.438 [http-nio-8099-exec-5] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:09:57.438 [http-nio-8099-exec-5] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/info?t=1753027797435
+2025-07-20 18:09:57.438 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:09:57.440 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/991/gudyh4sq/websocket", parameters={}
+2025-07-20 18:09:57.441 [http-nio-8099-exec-6] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:09:57.442 [http-nio-8099-exec-6] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/991/gudyh4sq/websocket
+2025-07-20 18:09:57.447 [http-nio-8099-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 101 SWITCHING_PROTOCOLS
+2025-07-20 18:09:57.448 [http-nio-8099-exec-6] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - New WebSocketServerSockJsSession[id=gudyh4sq]
+2025-07-20 18:09:57.450 [clientInboundChannel-26] DEBUG org.springframework.web.SimpLogging - Processing CONNECT session=gudyh4sq
+2025-07-20 18:09:57.451 [clientInboundChannel-29] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-progress id=sub-0 session=gudyh4sq
+2025-07-20 18:09:57.451 [clientInboundChannel-32] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-history id=sub-1 session=gudyh4sq
+2025-07-20 18:09:58.067 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:58.067 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:09:58.068 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1646/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:58.074 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:58.074 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:09:59.087 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:59.087 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:09:59.088 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1647/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:09:59.101 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:09:59.102 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:00.322 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:00.322 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:00.323 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1648/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:10:00.334 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:00.334 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:01.377 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:01.377 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:01.377 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1649/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:10:01.388 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:01.389 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:02.827 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:02.827 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:02.828 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1650/17800 photos downloaded (Total API usage: 109/200, Available keys: 2)
+2025-07-20 18:10:02.828 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Fetching photos with API key (length: 43)
+2025-07-20 18:10:04.153 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/download", parameters={}
+2025-07-20 18:10:04.153 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.DownloadController#downloadPage(Model)
+2025-07-20 18:10:04.155 [http-nio-8099-exec-9] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:10:04.167 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:10:04.177 [http-nio-8099-exec-8] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - WebSocketServerSockJsSession[id=gudyh4sq] closed with CloseStatus[code=1000, reason=null]
+2025-07-20 18:10:04.177 [http-nio-8099-exec-8] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - Clearing session gudyh4sq
+2025-07-20 18:10:04.178 [clientInboundChannel-35] DEBUG org.springframework.web.SimpLogging - Processing DISCONNECT session=gudyh4sq
+2025-07-20 18:10:04.178 [clientOutboundChannel-20] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true}, simpSessionId=gudyh4sq}], simpSessionId=gudyh4sq}]
+2025-07-20 18:10:04.192 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/info?t=1753027804190", parameters={masked}
+2025-07-20 18:10:04.192 [http-nio-8099-exec-3] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:10:04.193 [http-nio-8099-exec-3] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/info?t=1753027804190
+2025-07-20 18:10:04.193 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:10:04.196 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/356/0s0mwh5f/websocket", parameters={}
+2025-07-20 18:10:04.196 [http-nio-8099-exec-2] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:10:04.196 [http-nio-8099-exec-2] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/356/0s0mwh5f/websocket
+2025-07-20 18:10:04.197 [http-nio-8099-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 101 SWITCHING_PROTOCOLS
+2025-07-20 18:10:04.197 [http-nio-8099-exec-2] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - New WebSocketServerSockJsSession[id=0s0mwh5f]
+2025-07-20 18:10:04.198 [clientInboundChannel-38] DEBUG org.springframework.web.SimpLogging - Processing CONNECT session=0s0mwh5f
+2025-07-20 18:10:04.199 [clientInboundChannel-41] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-progress id=sub-0 session=0s0mwh5f
+2025-07-20 18:10:04.199 [clientInboundChannel-44] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-history id=sub-1 session=0s0mwh5f
+2025-07-20 18:10:04.311 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:04.312 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:05.866 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:05.866 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:05.866 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1651/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:05.872 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:05.872 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:07.498 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:07.498 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:07.499 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1652/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:07.504 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:07.504 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:08.572 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/download", parameters={}
+2025-07-20 18:10:08.573 [http-nio-8099-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.DownloadController#downloadPage(Model)
+2025-07-20 18:10:08.574 [http-nio-8099-exec-5] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:10:08.581 [http-nio-8099-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:10:08.597 [http-nio-8099-exec-6] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - WebSocketServerSockJsSession[id=0s0mwh5f] closed with CloseStatus[code=1000, reason=null]
+2025-07-20 18:10:08.598 [http-nio-8099-exec-6] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - Clearing session 0s0mwh5f
+2025-07-20 18:10:08.598 [clientInboundChannel-47] DEBUG org.springframework.web.SimpLogging - Processing DISCONNECT session=0s0mwh5f
+2025-07-20 18:10:08.600 [clientOutboundChannel-27] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true}, simpSessionId=0s0mwh5f}], simpSessionId=0s0mwh5f}]
+2025-07-20 18:10:08.610 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/info?t=1753027808609", parameters={masked}
+2025-07-20 18:10:08.611 [http-nio-8099-exec-1] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:10:08.611 [http-nio-8099-exec-1] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/info?t=1753027808609
+2025-07-20 18:10:08.611 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:10:08.614 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/024/ppbt2eyy/websocket", parameters={}
+2025-07-20 18:10:08.615 [http-nio-8099-exec-7] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:10:08.616 [http-nio-8099-exec-7] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/024/ppbt2eyy/websocket
+2025-07-20 18:10:08.617 [http-nio-8099-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 101 SWITCHING_PROTOCOLS
+2025-07-20 18:10:08.619 [http-nio-8099-exec-7] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - New WebSocketServerSockJsSession[id=ppbt2eyy]
+2025-07-20 18:10:08.620 [clientInboundChannel-27] DEBUG org.springframework.web.SimpLogging - Processing CONNECT session=ppbt2eyy
+2025-07-20 18:10:08.621 [clientInboundChannel-30] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-progress id=sub-0 session=ppbt2eyy
+2025-07-20 18:10:08.621 [clientInboundChannel-30] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-history id=sub-1 session=ppbt2eyy
+2025-07-20 18:10:08.850 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:08.851 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:08.852 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1653/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:08.860 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:08.860 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:11.225 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/download", parameters={}
+2025-07-20 18:10:11.225 [http-nio-8099-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.DownloadController#downloadPage(Model)
+2025-07-20 18:10:11.226 [http-nio-8099-exec-3] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:10:11.231 [http-nio-8099-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:10:11.236 [http-nio-8099-exec-2] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - WebSocketServerSockJsSession[id=ppbt2eyy] closed with CloseStatus[code=1000, reason=null]
+2025-07-20 18:10:11.236 [http-nio-8099-exec-2] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - Clearing session ppbt2eyy
+2025-07-20 18:10:11.237 [clientInboundChannel-34] DEBUG org.springframework.web.SimpLogging - Processing DISCONNECT session=ppbt2eyy
+2025-07-20 18:10:11.237 [clientOutboundChannel-31] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true}, simpSessionId=ppbt2eyy}], simpSessionId=ppbt2eyy}]
+2025-07-20 18:10:11.256 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/info?t=1753027811254", parameters={masked}
+2025-07-20 18:10:11.256 [http-nio-8099-exec-10] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:10:11.256 [http-nio-8099-exec-10] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/info?t=1753027811254
+2025-07-20 18:10:11.256 [http-nio-8099-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:10:11.260 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/ws/123/nwzlk2jc/websocket", parameters={}
+2025-07-20 18:10:11.260 [http-nio-8099-exec-4] DEBUG o.s.w.s.s.s.WebSocketHandlerMapping - Mapped to org.springframework.web.socket.sockjs.support.SockJsHttpRequestHandler@1026a011
+2025-07-20 18:10:11.261 [http-nio-8099-exec-4] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Processing transport request: GET http://localhost:8099/ws/123/nwzlk2jc/websocket
+2025-07-20 18:10:11.262 [http-nio-8099-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 101 SWITCHING_PROTOCOLS
+2025-07-20 18:10:11.263 [http-nio-8099-exec-4] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - New WebSocketServerSockJsSession[id=nwzlk2jc]
+2025-07-20 18:10:11.264 [clientInboundChannel-39] DEBUG org.springframework.web.SimpLogging - Processing CONNECT session=nwzlk2jc
+2025-07-20 18:10:11.266 [clientInboundChannel-42] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-progress id=sub-0 session=nwzlk2jc
+2025-07-20 18:10:11.266 [clientInboundChannel-42] DEBUG org.springframework.web.SimpLogging - Processing SUBSCRIBE /topic/download-history id=sub-1 session=nwzlk2jc
+2025-07-20 18:10:13.556 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:13.556 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:13.556 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1654/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:13.561 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:13.561 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:13.572 [MessageBroker-6] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Closed 1 sessions: [gudyh4sq]
+2025-07-20 18:10:15.663 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:15.663 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:15.663 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1655/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:15.672 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:15.672 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:17.322 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:17.322 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:17.322 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1656/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:17.329 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:17.329 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:18.571 [MessageBroker-6] DEBUG o.s.w.s.s.t.h.DefaultSockJsService - Closed 2 sessions: [ppbt2eyy, 0s0mwh5f]
+2025-07-20 18:10:18.744 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:18.744 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:18.744 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1657/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:18.749 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:18.750 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:19.936 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:19.936 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:19.936 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1658/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:19.946 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:19.946 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:22.252 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:22.252 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:22.252 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1659/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:22.257 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:22.257 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:24.215 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:24.215 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:24.216 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1660/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:24.221 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:24.221 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:26.996 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:26.996 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:26.996 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1661/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:27.001 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:27.001 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:29.597 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:29.597 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:29.597 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1662/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:29.602 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:29.602 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Broadcasting to 1 sessions.
+2025-07-20 18:10:30.909 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/stats", parameters={}
+2025-07-20 18:10:30.910 [http-nio-8099-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.WebController#stats(Model)
+2025-07-20 18:10:30.932 [http-nio-8099-exec-1] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-07-20 18:10:30.939 [http-nio-8099-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:10:30.942 [http-nio-8099-exec-7] DEBUG o.s.w.s.h.LoggingWebSocketHandlerDecorator - WebSocketServerSockJsSession[id=nwzlk2jc] closed with CloseStatus[code=1000, reason=null]
+2025-07-20 18:10:30.942 [http-nio-8099-exec-7] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - Clearing session nwzlk2jc
+2025-07-20 18:10:30.942 [clientInboundChannel-48] DEBUG org.springframework.web.SimpLogging - Processing DISCONNECT session=nwzlk2jc
+2025-07-20 18:10:30.943 [clientOutboundChannel-27] DEBUG o.s.w.s.m.SubProtocolWebSocketHandler - No session for GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT_ACK, simpDisconnectMessage=GenericMessage [payload=byte[0], headers={simpMessageType=DISCONNECT, stompCommand=DISCONNECT, simpSessionAttributes={org.springframework.messaging.simp.SimpAttributes.COMPLETED=true}, simpSessionId=nwzlk2jc}], simpSessionId=nwzlk2jc}]
+2025-07-20 18:10:30.957 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/photos/photographer/Bernd%20%F0%9F%93%B7%20Dittrich?size=1", parameters={masked}
+2025-07-20 18:10:30.958 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to de.dittnet.unsplashDownloader.controller.PhotoController#getPhotosByPhotographer(String, int, int)
+2025-07-20 18:10:30.978 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-07-20 18:10:30.979 [http-nio-8099-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1660 containing de.dittnet.unsplashDownloader.entity.PhotoEntity instances]
+2025-07-20 18:10:30.979 [http-nio-8099-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-07-20 18:10:31.129 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)
+2025-07-20 18:10:31.129 [ForkJoinPool.commonPool-worker-1] INFO  d.d.u.UnsplashDownloader - Progress: 1663/17800 photos downloaded (Total API usage: 110/200, Available keys: 2)
+2025-07-20 18:10:31.135 [ForkJoinPool.commonPool-worker-1] DEBUG org.springframework.web.SimpLogging - Processing MESSAGE destination=/topic/download-progress session=null payload={"username":"hdbernd","outputPath":"/Volumes/photo/unsplashMirror","status":"DOW...(truncated)

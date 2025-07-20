@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class WebController {
@@ -65,9 +66,13 @@ public class WebController {
         model.addAttribute("totalPages", photos.getTotalPages());
         model.addAttribute("totalElements", photos.getTotalElements());
         
-        // Add filter options
-        List<String> photographers = photoService.getAllPhotographers();
-        List<String> tags = photoService.getAllTags();
+        // Add filter options - limit for performance
+        List<String> photographers = photoService.getAllPhotographers().stream()
+            .limit(100) // Limit to top 100 photographers for performance
+            .collect(Collectors.toList());
+        List<String> tags = photoService.getAllTags().stream()
+            .limit(200) // Limit to top 200 tags for performance  
+            .collect(Collectors.toList());
         
         model.addAttribute("photographers", photographers);
         model.addAttribute("tags", tags);
@@ -94,8 +99,17 @@ public class WebController {
     @GetMapping("/stats")
     public String stats(Model model) {
         model.addAttribute("totalPhotos", photoService.getTotalPhotosCount());
-        model.addAttribute("photographers", photoService.getAllPhotographers());
-        model.addAttribute("tags", photoService.getAllTags());
+        
+        // Limit for performance - full lists can be very large
+        List<String> photographers = photoService.getAllPhotographers().stream()
+            .limit(50) // Top 50 photographers for stats page
+            .collect(Collectors.toList());
+        List<String> tags = photoService.getAllTags().stream()
+            .limit(100) // Top 100 tags for stats page
+            .collect(Collectors.toList());
+            
+        model.addAttribute("photographers", photographers);
+        model.addAttribute("tags", tags);
         
         return "stats";
     }

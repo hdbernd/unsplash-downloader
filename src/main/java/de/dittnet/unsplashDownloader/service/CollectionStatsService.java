@@ -16,7 +16,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,8 +88,10 @@ public class CollectionStatsService {
                 stats.setTotalApiLimit(0);
             }
             
-            // Storage stats
-            calculateStorageStats(stats);
+            // Storage stats - skip for performance, can be calculated separately if needed
+            // calculateStorageStats(stats);
+            stats.setTotalStorageBytes(0);
+            stats.setTotalFiles(0);
             
             // Set last updated
             stats.setLastUpdated(LocalDateTime.now());
@@ -101,45 +105,61 @@ public class CollectionStatsService {
         return stats;
     }
     
-    private void calculateStorageStats(CollectionStats stats) {
+    public Map<String, Object> calculateStorageStatsDetailed() {
+        Map<String, Object> storageStats = new HashMap<>();
+        
         try {
-            // Calculate total storage used
+            // Calculate total storage used with limits for performance
             long totalSizeBytes = 0;
             int totalFiles = 0;
             
             // Get current user output path for accurate stats
             String userOutputPath = userSettingsService.getLastOutputPath();
             
-            // Photos directory (in user-defined location)
+            // Photos directory (in user-defined location) - limit to first 1000 files for performance
             String photosDir = storageConfig.getUserPhotosDirectory(userOutputPath);
             Path photosPath = Paths.get(photosDir);
             if (Files.exists(photosPath)) {
-                totalSizeBytes += Files.walk(photosPath)
-                    .filter(Files::isRegularFile)
-                    .mapToLong(this::getFileSize)
-                    .sum();
-                
-                totalFiles += (int) Files.walk(photosPath)
-                    .filter(Files::isRegularFile)
-                    .count();
+                try {
+                    totalSizeBytes += Files.walk(photosPath)
+                        .filter(Files::isRegularFile)
+                        .limit(1000) // Limit for performance
+                        .mapToLong(this::getFileSize)
+                        .sum();
+                    
+                    totalFiles += (int) Files.walk(photosPath)
+                        .filter(Files::isRegularFile)
+                        .limit(1000) // Limit for performance
+                        .count();
+                } catch (Exception e) {
+                    logger.warn("Failed to walk photos directory: {}", e.getMessage());
+                }
             }
             
-            // Thumbnails directory (in user-defined system dir)
+            // Thumbnails directory (usually smaller)
             Path thumbsPath = Paths.get(storageConfig.getThumbnailsDirectory());
             if (Files.exists(thumbsPath)) {
-                totalSizeBytes += Files.walk(thumbsPath)
-                    .filter(Files::isRegularFile)
-                    .mapToLong(this::getFileSize)
-                    .sum();
+                try {
+                    totalSizeBytes += Files.walk(thumbsPath)
+                        .filter(Files::isRegularFile)
+                        .mapToLong(this::getFileSize)
+                        .sum();
+                } catch (Exception e) {
+                    logger.warn("Failed to walk thumbnails directory: {}", e.getMessage());
+                }
             }
             
-            // Database files (in user-defined system dir)
+            // Database files (small)
             Path dbPath = Paths.get(storageConfig.getDatabaseDirectory());
             if (Files.exists(dbPath)) {
-                totalSizeBytes += Files.walk(dbPath)
-                    .filter(Files::isRegularFile)
-                    .mapToLong(this::getFileSize)
-                    .sum();
+                try {
+                    totalSizeBytes += Files.walk(dbPath)
+                        .filter(Files::isRegularFile)
+                        .mapToLong(this::getFileSize)
+                        .sum();
+                } catch (Exception e) {
+                    logger.warn("Failed to walk database directory: {}", e.getMessage());
+                }
             }
             
             // Also count descriptions.txt in user directory
@@ -151,14 +171,28 @@ public class CollectionStatsService {
                 }
             }
             
-            stats.setTotalStorageBytes(totalSizeBytes);
-            stats.setTotalFiles(totalFiles);
+            storageStats.put("totalSizeBytes", totalSizeBytes);
+            storageStats.put("totalFiles", totalFiles);
+            storageStats.put("formattedSize", formatStorageSize(totalSizeBytes));
+            storageStats.put("isLimited", totalFiles >= 1000); // Indicate if results are limited
             
         } catch (Exception e) {
             logger.warn("Failed to calculate storage stats", e);
-            stats.setTotalStorageBytes(0);
-            stats.setTotalFiles(0);
+            storageStats.put("totalSizeBytes", 0L);
+            storageStats.put("totalFiles", 0);
+            storageStats.put("formattedSize", "0 B");
+            storageStats.put("isLimited", false);
         }
+        
+        return storageStats;
+    }
+    
+    @Deprecated
+    private void calculateStorageStats(CollectionStats stats) {
+        // This method is deprecated for performance reasons
+        // Use calculateStorageStatsDetailed() instead for on-demand calculation
+        stats.setTotalStorageBytes(0);
+        stats.setTotalFiles(0);
     }
     
     private long getFileSize(Path path) {
