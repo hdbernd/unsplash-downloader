@@ -39,16 +39,24 @@ public class ApiKeyService {
     
     private void initializeApiKeyManager() {
         try {
-            String stateDir = storageConfig.getStateDirectory();
-            this.apiKeyManager = new ApiKeyManager(stateDir);
+            // Use the base directory so ApiKeyManager can find config in config/ subdirectory
+            String baseDir = storageConfig.getBaseDirectory();
+            this.apiKeyManager = new ApiKeyManager(baseDir);
         } catch (IOException e) {
-            logger.error("Failed to initialize API key manager", e);
+            logger.warn("API key manager initialization failed - no API keys configured yet: {}", e.getMessage());
+            // Don't set apiKeyManager to null, it's already null
         }
     }
     
     public List<ApiKeyInfo> getAllApiKeys() {
         if (apiKeyManager == null) {
             initializeApiKeyManager();
+        }
+        
+        // If still null after initialization, return empty list
+        if (apiKeyManager == null) {
+            logger.warn("API key manager not available - no API keys configured");
+            return new ArrayList<>();
         }
         
         List<ApiKeyInfo> keyInfos = new ArrayList<>();

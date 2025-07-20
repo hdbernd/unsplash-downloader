@@ -65,19 +65,26 @@ public class CollectionStatsService {
             DownloadProgress latestProgress = progressService.getLatestProgress();
             stats.setCurrentProgress(latestProgress);
             
-            // API key stats
-            List<ApiKeyInfo> apiKeys = apiKeyService.getAllApiKeys();
-            stats.setTotalApiKeys(apiKeys.size());
-            
-            int totalApiUsage = apiKeys.stream()
-                .mapToInt(ApiKeyInfo::getUsageCount)
-                .sum();
-            stats.setTotalApiUsage(totalApiUsage);
-            
-            int totalApiLimit = apiKeys.stream()
-                .mapToInt(ApiKeyInfo::getDailyLimit)
-                .sum();
-            stats.setTotalApiLimit(totalApiLimit);
+            // API key stats - handle gracefully if no keys configured
+            try {
+                List<ApiKeyInfo> apiKeys = apiKeyService.getAllApiKeys();
+                stats.setTotalApiKeys(apiKeys.size());
+                
+                int totalApiUsage = apiKeys.stream()
+                    .mapToInt(ApiKeyInfo::getUsageCount)
+                    .sum();
+                stats.setTotalApiUsage(totalApiUsage);
+                
+                int totalApiLimit = apiKeys.stream()
+                    .mapToInt(ApiKeyInfo::getDailyLimit)
+                    .sum();
+                stats.setTotalApiLimit(totalApiLimit);
+            } catch (Exception e) {
+                logger.warn("Could not load API key statistics: {}", e.getMessage());
+                stats.setTotalApiKeys(0);
+                stats.setTotalApiUsage(0);
+                stats.setTotalApiLimit(0);
+            }
             
             // Storage stats
             calculateStorageStats(stats);

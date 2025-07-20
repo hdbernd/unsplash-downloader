@@ -32,7 +32,6 @@ public class ApiKeyManager {
     
     public ApiKeyManager(String outputDir) throws IOException {
         this.stateDir = outputDir;
-        this.apiKeys = loadApiKeys();
         this.hourlyUsage = new HashMap<>();
         this.lastUsageHour = new HashMap<>();
         this.keyRateLimited = new HashMap<>();
@@ -41,6 +40,16 @@ public class ApiKeyManager {
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         this.stateFile = new File(outputDir, "api_key_state.json");
         this.hourlyLimit = DEFAULT_HOURLY_LIMIT_DEMO; // Default to demo limits
+        
+        // Try to load API keys, but use empty list if none found
+        List<String> loadedKeys;
+        try {
+            loadedKeys = loadApiKeys();
+        } catch (IOException e) {
+            logger.warn("No API keys found during initialization: {}", e.getMessage());
+            loadedKeys = new ArrayList<>();
+        }
+        this.apiKeys = loadedKeys;
         
         loadState();
         validateKeys();
@@ -146,7 +155,8 @@ public class ApiKeyManager {
     
     private void validateKeys() {
         if (apiKeys.isEmpty()) {
-            throw new IllegalStateException("No API keys available");
+            logger.warn("No API keys available - downloads will not work until keys are added");
+            return;
         }
         
         // Initialize usage tracking for all keys
