@@ -1,0 +1,17 @@
+# Unsplash API Configuration Template
+# Copy this file to config.properties and add your API keys
+
+# Method 1: Single API key (backward compatible)
+unsplash.access.token=YOUR_UNSPLASH_API_KEY_HERE
+
+# Method 2: Multiple API keys for faster downloading (recommended)
+# Separate multiple keys with commas
+# unsplash.access.tokens=key1,key2,key3
+
+# Method 3: Environment variables (most secure)
+# Set UNSPLASH_ACCESS_TOKEN for single key
+# Set UNSPLASH_ACCESS_TOKENS for multiple keys (comma-separated)
+
+# Application settings
+app.daily.request.limit=500
+app.download.delay.ms=1000

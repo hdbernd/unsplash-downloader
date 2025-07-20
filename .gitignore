@@ -1,0 +1,81 @@
+# API Keys and Sensitive Configuration
+config.properties
+*.env
+.env*
+
+# Unsplash Data Directory (contains downloaded photos and database)
+unsplash-data/
+photos/
+thumbnails/
+
+# Application Logs
+logs/
+*.log
+app.log
+
+# IDE Files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Database Files
+*.db
+*.mv.db
+*.trace.db
+*.lock.db
+
+# Temporary Files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# User-specific configuration
+user_settings.json
+local.properties
+
+# Build artifacts
+build/
+dist/
+out/
+
+# Security
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
