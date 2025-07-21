@@ -73,15 +73,16 @@ public class ApiKeyManager {
         // If no environment variables, try properties file
         if (keys.isEmpty()) {
             Properties prop = new Properties();
-            String configPath = stateDir != null ? 
-                Paths.get(stateDir, "config", "config.properties").toString() : 
-                "config.properties";
+            String configPath;
+            if (stateDir != null) {
+                // Use the same path structure as StorageConfig
+                configPath = Paths.get(stateDir, "config", "config.properties").toString();
+            } else {
+                // Fallback to project root config.properties
+                configPath = "config.properties";
+            }
             
             File configFile = new File(configPath);
-            if (!configFile.exists() && stateDir == null) {
-                // Fallback to project root config.properties
-                configFile = new File("config.properties");
-            }
             
             logger.info("Looking for API keys in config file: {}", configFile.getAbsolutePath());
             
@@ -286,6 +287,17 @@ public class ApiKeyManager {
             .orElse(LocalDateTime.now().plusHours(1));
     }
     
+    public synchronized LocalDateTime getLastUsageTime(String key) {
+        return lastUsageHour.get(key);
+    }
+    
+    public synchronized LocalDateTime getAvailableAgainTime(String key) {
+        if (!keyRateLimited.getOrDefault(key, false)) {
+            return null; // Available now
+        }
+        return rateLimitResetTime.get(key);
+    }
+    
     private void loadState() {
         if (!stateFile.exists()) {
             return;
@@ -322,6 +334,21 @@ public class ApiKeyManager {
         state.setCurrentKeyIndex(currentKeyIndex.get());
         
         objectMapper.writeValue(stateFile, state);
+    }
+    
+    public void reloadConfiguration() {
+        try {
+            List<String> newKeys = loadApiKeys();
+            apiKeys.clear();
+            apiKeys.addAll(newKeys);
+            
+            // Initialize tracking maps for all keys
+            validateKeys();
+            
+            logger.info("Reloaded API key configuration: {} keys found", newKeys.size());
+        } catch (IOException e) {
+            logger.error("Failed to reload API key configuration", e);
+        }
     }
     
     private static class ApiKeyState {

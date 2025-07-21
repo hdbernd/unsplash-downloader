@@ -141,7 +141,17 @@ public class UnsplashDownloader {
                 }
 
                 try {
-                    downloadPhoto(photo, username);
+                    // Fetch full photo details including tags
+                    Photo fullPhoto = fetchPhotoDetails(photo.getId());
+                    if (fullPhoto != null) {
+                        // Use full photo object with tags for download
+                        downloadPhoto(fullPhoto, username);
+                    } else {
+                        // Fallback to abbreviated photo if fetch fails
+                        logger.warn("Failed to fetch full photo details for {}, using abbreviated data", photo.getId());
+                        downloadPhoto(photo, username);
+                    }
+                    
                     state.getDownloadedPhotos().add(photo.getId());
                     saveState();
                     
@@ -208,6 +218,56 @@ public class UnsplashDownloader {
             } else {
                 throw new IOException("Unexpected total_photos format in API response");
             }
+        }
+    }
+
+    private Photo fetchPhotoDetails(String photoId) throws IOException {
+        String url = String.format("%s/photos/%s", API_BASE_URL, photoId);
+        
+        String accessToken = apiKeyManager.getNextAvailableKey();
+        if (accessToken == null) {
+            logger.warn("No API keys available for fetching photo details");
+            return null;
+        }
+        
+        // Check for dummy keys at runtime
+        if (isDummyKey(accessToken)) {
+            logger.warn("Cannot fetch photo details with dummy/test API key");
+            return null;
+        }
+        
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Client-ID " + accessToken)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                if (response.code() == 403) {
+                    // Mark this key as rate limited
+                    apiKeyManager.markKeyRateLimited(accessToken);
+                    logger.warn("Rate limit hit while fetching photo details for {}", photoId);
+                    return null;
+                } else {
+                    logger.warn("Failed to fetch photo details for {}: {} - {}", photoId, response.code(), response.message());
+                    return null;
+                }
+            }
+
+            apiKeyManager.recordUsage(accessToken);
+            
+            Photo photo = objectMapper.readValue(
+                    response.body().string(),
+                    Photo.class
+            );
+            
+            logger.debug("Fetched full photo details for {} with {} tags", photoId, 
+                photo.getTags() != null ? photo.getTags().size() : 0);
+            
+            return photo;
+        } catch (Exception e) {
+            logger.warn("Exception while fetching photo details for {}: {}", photoId, e.getMessage());
+            return null;
         }
     }
 

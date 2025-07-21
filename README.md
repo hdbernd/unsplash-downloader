@@ -12,8 +12,9 @@ A comprehensive Java Spring Boot application for downloading and managing Unspla
 - **Rate Limit Handling**: Smart handling of demo (50/hour) and production (5000/hour) limits
 
 ### Metadata & Organization  
-- **EXIF Metadata Embedding**: Photo descriptions and photographer info embedded in images
-- **Database Storage**: H2 database for fast photo metadata search and browsing
+- **Complete Tag Retrieval**: Automatically fetches all tags from Unsplash API for each photo
+- **EXIF Metadata Embedding**: Photo descriptions, tags, and photographer info embedded in images
+- **Database Storage**: H2 database for fast photo metadata search and browsing with full tag support
 - **Thumbnail Generation**: Automatic thumbnail creation for web interface
 - **Full-text Search**: Search photos by description, tags, or photographer
 
@@ -146,8 +147,9 @@ The program creates:
 4. Log files in the `logs` directory
 
 Each photo will have:
-- EXIF metadata with the photo description
+- EXIF metadata with photo description and all tags
 - Photographer information embedded
+- Complete tag metadata stored in database and image files
 - Original Unsplash photo ID in the filename
 
 ## Advanced Rate Limiting & API Key Management
@@ -155,11 +157,12 @@ Each photo will have:
 The application provides intelligent rate limit handling with multiple API key support:
 
 ### Rate Limit Management
-- **Demo apps:** 50 requests per hour per API key
+- **Demo apps:** 50 requests per hour per API key (includes both photo list and individual photo detail calls)
 - **Production apps:** 5000 requests per hour per API key
 - **Hourly Usage Tracking**: Resets automatically each hour
 - **Smart Key Rotation**: Automatically switches to next available key when limits hit
 - **Rate Limit Recovery**: Tracks when keys become available again
+- **Dual API Calls**: Each photo requires 2 API calls (list + detail for tags) - plan accordingly
 
 ### Multiple API Key Features
 ```
