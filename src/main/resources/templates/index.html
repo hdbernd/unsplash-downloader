@@ -335,6 +335,45 @@
             </div>
         </div>
         
+        <!-- Sync Status Legend -->
+        <div th:if="${photos.hasContent()}" class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body py-2">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap">
+                            <small class="text-muted fw-bold me-3">Metadata Sync Status:</small>
+                            <div class="d-flex flex-wrap gap-3">
+                                <small class="d-flex align-items-center">
+                                    <span class="badge bg-success me-1"><i class="bi bi-check-lg"></i></span>
+                                    Synced
+                                </small>
+                                <small class="d-flex align-items-center">
+                                    <span class="badge bg-warning me-1"><i class="bi bi-clock"></i></span>
+                                    Pending
+                                </small>
+                                <small class="d-flex align-items-center">
+                                    <span class="badge bg-primary me-1"><i class="bi bi-arrow-clockwise"></i></span>
+                                    Processing
+                                </small>
+                                <small class="d-flex align-items-center">
+                                    <span class="badge bg-danger me-1"><i class="bi bi-x-lg"></i></span>
+                                    Failed
+                                </small>
+                                <small class="d-flex align-items-center">
+                                    <span class="badge bg-secondary me-1"><i class="bi bi-dash"></i></span>
+                                    Skipped
+                                </small>
+                                <small class="d-flex align-items-center">
+                                    <span class="badge bg-light text-dark me-1"><i class="bi bi-question"></i></span>
+                                    Not Tracked
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Photo Grid -->
         <div th:if="${photos.hasContent()}" class="masonry-grid">
             <div th:each="photo : ${photos.content}" class="masonry-item">
