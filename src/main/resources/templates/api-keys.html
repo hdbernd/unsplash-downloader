@@ -139,6 +139,16 @@
             <div class="col-md-6">
                 <div class="stats-card">
                     <h4><i class="bi bi-graph-up"></i> Usage Statistics</h4>
+                    <div class="mb-3">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-info" id="refreshBtn">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh Status
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning" id="resetUsageBtn">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset Usage
+                            </button>
+                        </div>
+                    </div>
                     <div class="row text-center">
                         <div class="col-6">
                             <div class="fs-3 fw-bold text-primary" th:text="${stats.totalKeys}">0</div>
@@ -210,8 +220,8 @@
                                 <small class="text-muted d-block">
                                     <i class="bi bi-clock"></i> Last used: <span th:text="${key.formattedLastUsed}">Never</span>
                                 </small>
-                                <small class="text-muted d-block" th:if="${!key.active}">
-                                    <i class="bi bi-arrow-clockwise"></i> <span th:text="${key.formattedAvailableAgain}">Available again</span>
+                                <small class="text-muted d-block" th:if="${key.atLimit}">
+                                    <i class="bi bi-arrow-clockwise"></i> Available again: <span class="countdown-timer" th:data-available-time="${key.availableAgainTime}">--</span>
                                 </small>
                             </div>
                         </div>
@@ -221,6 +231,11 @@
                                         th:data-key-id="${key.id}"
                                         th:data-key-preview="${key.keyPreview}">
                                     <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-outline-warning test-countdown-btn" 
+                                        th:data-key-id="${key.id}"
+                                        th:if="${!key.atLimit}">
+                                    <i class="bi bi-clock"></i> Test
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger delete-key-btn" 
                                         th:data-key-id="${key.id}">
@@ -487,6 +502,161 @@
                 }
             });
         });
+
+        // API Key Countdown Timer
+        function updateCountdowns() {
+            const countdownElements = document.querySelectorAll('.countdown-timer');
+            
+            countdownElements.forEach(element => {
+                const availableTime = element.getAttribute('data-available-time');
+                if (!availableTime || availableTime === '--') {
+                    element.textContent = '--';
+                    return;
+                }
+                
+                try {
+                    const targetTime = new Date(availableTime);
+                    const now = new Date();
+                    const diff = targetTime - now;
+                    
+                    if (diff <= 0) {
+                        element.textContent = 'Now available';
+                        element.parentElement.style.color = '#28a745'; // Success green
+                        // Refresh page after a short delay to show updated status
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        const minutes = Math.floor(diff / 60000);
+                        const seconds = Math.floor((diff % 60000) / 1000);
+                        
+                        if (minutes > 0) {
+                            element.textContent = `${minutes}m ${seconds}s`;
+                        } else {
+                            element.textContent = `${seconds}s`;
+                        }
+                        
+                        // Color coding: red if >30min, orange if >10min, yellow if >2min, green if <2min
+                        if (minutes > 30) {
+                            element.parentElement.style.color = '#dc3545'; // Danger red
+                        } else if (minutes > 10) {
+                            element.parentElement.style.color = '#fd7e14'; // Warning orange
+                        } else if (minutes > 2) {
+                            element.parentElement.style.color = '#ffc107'; // Warning yellow
+                        } else {
+                            element.parentElement.style.color = '#28a745'; // Success green
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing countdown time:', error);
+                    element.textContent = '--';
+                }
+            });
+        }
+        
+        // Test countdown functionality
+        document.querySelectorAll('.test-countdown-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const keyId = this.getAttribute('data-key-id');
+                const btn = this;
+                
+                if (confirm('This will simulate reaching the hourly limit for this API key to test the countdown timer. Continue?')) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Testing...';
+                    
+                    fetch('/api-keys/test-countdown', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'keyId=' + encodeURIComponent(keyId)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Countdown test activated! The key will show a 1-hour countdown timer.');
+                            location.reload();
+                        } else {
+                            alert('Failed to test countdown: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to test countdown');
+                    })
+                    .finally(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="bi bi-clock"></i> Test';
+                    });
+                }
+            });
+        });
+        
+        // Refresh button functionality
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Refreshing...';
+            
+            fetch('/api-keys/check-availability', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.message);
+                    location.reload(); // Refresh page to show updated states
+                } else {
+                    alert('Failed to check availability: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to refresh status');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Refresh Status';
+            });
+        });
+        
+        // Reset usage button functionality
+        document.getElementById('resetUsageBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset all API key usage counters? This will reset the hourly usage count for all keys.')) {
+                const btn = this;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Resetting...';
+                
+                fetch('/api-keys/reset-usage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Usage counters have been reset successfully!');
+                        location.reload(); // Refresh page to show updated states
+                    } else {
+                        alert('Failed to reset usage: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to reset usage counters');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> Reset Usage';
+                });
+            }
+        });
+        
+        // Initialize and update countdowns
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000); // Update every second
     </script>
 </body>
 </html>

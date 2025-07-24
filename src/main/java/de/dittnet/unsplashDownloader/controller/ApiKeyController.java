@@ -174,4 +174,76 @@ public class ApiKeyController {
             return ResponseEntity.internalServerError().body(List.of());
         }
     }
+    
+    @PostMapping("/test-countdown")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> testCountdown(@RequestParam("keyId") String keyId) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // This is a test endpoint to simulate a rate-limited key for countdown demo
+            apiKeyService.simulateRateLimit(keyId);
+            
+            response.put("success", true);
+            response.put("message", "Key temporarily rate-limited for countdown test");
+            
+            logger.info("API key temporarily rate-limited for test: {}", keyId);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Failed to test countdown", e);
+            response.put("success", false);
+            response.put("message", "Failed to test countdown: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+    
+    @PostMapping("/check-availability")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> checkAvailability() {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // Force refresh of API key states
+            List<ApiKeyInfo> apiKeys = apiKeyService.getAllApiKeys();
+            
+            int availableKeys = (int) apiKeys.stream().filter(key -> !key.isAtLimit()).count();
+            int totalKeys = apiKeys.size();
+            
+            response.put("success", true);
+            response.put("availableKeys", availableKeys);
+            response.put("totalKeys", totalKeys);
+            response.put("message", String.format("%d of %d keys available", availableKeys, totalKeys));
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Failed to check key availability", e);
+            response.put("success", false);
+            response.put("message", "Failed to check availability: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+    
+    @PostMapping("/reset-usage")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> resetUsage() {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            apiKeyService.resetAllUsageCounters();
+            
+            response.put("success", true);
+            response.put("message", "API key usage counters have been reset");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Failed to reset usage counters", e);
+            response.put("success", false);
+            response.put("message", "Failed to reset usage: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
 }

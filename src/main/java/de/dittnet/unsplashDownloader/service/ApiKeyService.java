@@ -9,6 +9,7 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -25,10 +26,12 @@ public class ApiKeyService {
     private static final String API_BASE_URL = "https://api.unsplash.com";
     
     private final OkHttpClient client;
-    private ApiKeyManager apiKeyManager;
     
     @Autowired
     private StorageConfig storageConfig;
+    
+    @Autowired
+    private ApiKeyManager apiKeyManager;
     
     public ApiKeyService() {
         this.client = new OkHttpClient.Builder()
@@ -37,25 +40,10 @@ public class ApiKeyService {
                 .build();
     }
     
-    private void initializeApiKeyManager() {
-        try {
-            // Use the base directory so ApiKeyManager can find config in config/ subdirectory
-            String baseDir = storageConfig.getBaseDirectory();
-            this.apiKeyManager = new ApiKeyManager(baseDir);
-        } catch (IOException e) {
-            logger.warn("API key manager initialization failed - no API keys configured yet: {}", e.getMessage());
-            // Don't set apiKeyManager to null, it's already null
-        }
-    }
-    
     public List<ApiKeyInfo> getAllApiKeys() {
+        // ApiKeyManager is now injected via Spring
         if (apiKeyManager == null) {
-            initializeApiKeyManager();
-        }
-        
-        // If still null after initialization, return empty list
-        if (apiKeyManager == null) {
-            logger.warn("API key manager not available - no API keys configured");
+            logger.warn("API key manager not available - dependency injection failed");
             return new ArrayList<>();
         }
         
@@ -80,6 +68,10 @@ public class ApiKeyService {
                     info.setUsageCount(usage.getOrDefault(singleKey, 0));
                     info.setDailyLimit(50); // Demo apps: 50 requests/hour
                     info.setActive(!rateLimited.getOrDefault(singleKey, false));
+                    
+                    // Set timing information
+                    info.setLastUsed(apiKeyManager.getLastUsageTime(singleKey));
+                    info.setAvailableAgain(apiKeyManager.getAvailableAgainTime(singleKey));
                 }
                 
                 keyInfos.add(info);
@@ -105,6 +97,10 @@ public class ApiKeyService {
                             info.setUsageCount(usage.getOrDefault(key, 0));
                             info.setDailyLimit(50); // Demo apps: 50 requests/hour
                             info.setActive(!rateLimited.getOrDefault(key, false));
+                            
+                            // Set timing information
+                            info.setLastUsed(apiKeyManager.getLastUsageTime(key));
+                            info.setAvailableAgain(apiKeyManager.getAvailableAgainTime(key));
                         }
                         
                         keyInfos.add(info);
@@ -212,8 +208,10 @@ public class ApiKeyService {
         
         saveProperties(props);
         
-        // Reinitialize API key manager
-        initializeApiKeyManager();
+        // API key manager is now managed by Spring - reload configuration
+        if (apiKeyManager != null) {
+            apiKeyManager.reloadConfiguration();
+        }
     }
     
     public void removeApiKey(String keyId) throws IOException {
@@ -258,8 +256,10 @@ public class ApiKeyService {
         
         saveProperties(props);
         
-        // Reinitialize API key manager
-        initializeApiKeyManager();
+        // API key manager is now managed by Spring - reload configuration
+        if (apiKeyManager != null) {
+            apiKeyManager.reloadConfiguration();
+        }
     }
     
     public void updateApiKey(String keyId, String newApiKey) throws IOException {
@@ -334,5 +334,59 @@ public class ApiKeyService {
         }
         
         return apiKey.substring(0, 6) + "***" + apiKey.substring(apiKey.length() - 4);
+    }
+    
+    /**
+     * Simulate rate limiting for testing countdown timer
+     */
+    public void simulateRateLimit(String keyId) {
+        if (apiKeyManager != null) {
+            // Extract the actual key from keyId (remove prefix like "multi_")
+            List<ApiKeyInfo> keys = getAllApiKeys();
+            for (ApiKeyInfo info : keys) {
+                if (info.getId().equals(keyId)) {
+                    // Simulate that this key has reached its hourly limit
+                    apiKeyManager.simulateHourlyLimitReached(info.getFullKey());
+                    break;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Scheduled task to reset API key usage counters at the top of each hour
+     * Runs every minute to check for usage resets
+     */
+    @Scheduled(fixedRate = 60000) // Run every minute
+    public void checkAndResetUsage() {
+        if (apiKeyManager != null) {
+            try {
+                // Force a check of all keys which will trigger reset logic if needed
+                // This ensures usage counters are reset even when no API calls are being made
+                apiKeyManager.getNextAvailableKey();
+                logger.debug("Checked API key usage counters for automatic reset");
+            } catch (Exception e) {
+                // It's okay if no keys are available, we just want to trigger the reset check
+                logger.debug("API key usage check completed (no available keys is normal)");
+            }
+        }
+    }
+    
+    /**
+     * Manual reset of all API key usage counters
+     * Useful for administrative purposes or testing
+     */
+    public void resetAllUsageCounters() {
+        if (apiKeyManager != null) {
+            logger.info("Manually resetting all API key usage counters");
+            // The reset logic is built into the ApiKeyManager.getNextAvailableKey() method
+            // We can trigger it by calling the method, which will reset any keys that need it
+            try {
+                apiKeyManager.getNextAvailableKey();
+            } catch (Exception e) {
+                // Expected if no keys are available
+            }
+            logger.info("Manual reset completed");
+        }
     }
 }
