@@ -8,6 +8,7 @@ import de.dittnet.unsplashDownloader.repository.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,8 +91,12 @@ public class PhotoService {
         return photoRepository.findAllByOrderByLikesDesc(pageable);
     }
     
+    public List<PhotoEntity> getTop100PhotosWithLikes() {
+        return photoRepository.findTop100PhotosWithLikes(Limit.of(100));
+    }
+    
     public Optional<PhotoEntity> getPhotoById(String id) {
-        return photoRepository.findById(id);
+        return photoRepository.findByIdWithTags(id);
     }
     
     public List<String> getAllPhotographers() {
@@ -108,6 +113,31 @@ public class PhotoService {
             .limit(limit)
             .map(row -> new TagStats((String) row[0], ((Number) row[1]).longValue()))
             .collect(Collectors.toList());
+    }
+    
+    @Transactional
+    public void updatePhotoTags(String photoId, List<Photo.Tag> tags) {
+        Optional<PhotoEntity> photoOpt = photoRepository.findById(photoId);
+        if (photoOpt.isPresent()) {
+            PhotoEntity photo = photoOpt.get();
+            
+            // Clear existing tags
+            if (photo.getTags() != null) {
+                photo.getTags().clear();
+            }
+            
+            // Add new tags
+            if (tags != null && !tags.isEmpty()) {
+                Set<PhotoTagEntity> tagEntities = new HashSet<>();
+                for (Photo.Tag tag : tags) {
+                    PhotoTagEntity tagEntity = new PhotoTagEntity(photo, tag.getTitle(), tag.getType());
+                    tagEntities.add(tagEntity);
+                }
+                photo.setTags(tagEntities);
+            }
+            
+            photoRepository.save(photo);
+        }
     }
     
     public long getTotalPhotosCount() {
@@ -135,5 +165,17 @@ public class PhotoService {
             }
         }
         return null;
+    }
+    
+    public List<PhotoEntity> getPhotosWithoutTags() {
+        return photoRepository.findPhotosWithoutTags();
+    }
+    
+    public Optional<PhotoEntity> getPhotoByIdOptional(String id) {
+        return photoRepository.findById(id);
+    }
+    
+    public List<PhotoEntity> getAllPhotosForSync() {
+        return photoRepository.findAll();
     }
 }

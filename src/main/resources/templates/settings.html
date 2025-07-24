@@ -153,6 +153,206 @@
                             </div>
                             
                             <div class="form-section">
+                                <h6 class="mb-3"><i class="bi bi-database"></i> Database Synchronization</h6>
+                                
+                                <div class="setting-group">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label setting-label">Network Drive Sync</label>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-info btn-sm" id="syncStatusBtn">
+                                                <i class="bi bi-info-circle"></i> Status
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="syncToNetworkBtn">
+                                                <i class="bi bi-cloud-upload"></i> Sync to Network
+                                            </button>
+                                            <button type="button" class="btn btn-outline-warning btn-sm" id="restoreFromNetworkBtn">
+                                                <i class="bi bi-cloud-download"></i> Restore from Network
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-text">
+                                        Automatically synchronizes local database with network drive for reliability. 
+                                        Local database provides fast performance while maintaining network backup.
+                                        Database syncs to network every minute and on application shutdown.
+                                    </div>
+                                    <div id="syncStatusDisplay" class="mt-2" style="display: none;">
+                                        <div class="alert alert-info">
+                                            <div id="syncStatusContent">Loading sync status...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h6 class="mb-3"><i class="bi bi-file-earmark-text"></i> Metadata Sync</h6>
+                                
+                                <div class="setting-group">
+                                    <div class="alert alert-info">
+                                        <strong><i class="bi bi-info-circle"></i> About Metadata Sync:</strong> 
+                                        This feature writes photo descriptions, tags, and photographer information directly into the EXIF metadata of your downloaded JPEG images. 
+                                        This makes the information available in any photo viewer or editing software.
+                                    </div>
+                                    
+                                    <!-- Sync Statistics -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Sync Status</h6>
+                                                    <div class="row text-center" id="metadataSyncStats">
+                                                        <div class="col-3">
+                                                            <div class="h5 text-primary mb-0" id="totalPhotosCount">--</div>
+                                                            <small class="text-muted">Total Photos</small>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <div class="h5 text-success mb-0" id="completedCount">--</div>
+                                                            <small class="text-muted">Synced</small>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <div class="h5 text-warning mb-0" id="pendingCount">--</div>
+                                                            <small class="text-muted">Pending</small>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <div class="h5 text-danger mb-0" id="failedCount">--</div>
+                                                            <small class="text-muted">Failed</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-3">
+                                                        <div class="progress" style="height: 8px;">
+                                                            <div class="progress-bar bg-success" id="syncProgressBar" style="width: 0%"></div>
+                                                        </div>
+                                                        <small class="text-muted">Completion: <span id="completionPercentage">0%</span></small>
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <small class="text-muted" id="syncStatusText">Ready</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Sync Controls -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Batch Size</label>
+                                            <select class="form-select" id="batchSizeSelect">
+                                                <option value="50">50 photos</option>
+                                                <option value="100" selected>100 photos</option>
+                                                <option value="200">200 photos</option>
+                                                <option value="500">500 photos</option>
+                                            </select>
+                                            <div class="form-text">Number of photos to process in each batch</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Actions</label>
+                                            <div class="d-grid gap-2">
+                                                <button class="btn btn-outline-primary" id="initializeBtn">
+                                                    <i class="bi bi-plus-circle"></i> Initialize Sync
+                                                </button>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-success" id="startSyncBtn">
+                                                        <i class="bi bi-play-circle"></i> Start Sync
+                                                    </button>
+                                                    <button class="btn btn-warning" id="stopSyncBtn" disabled>
+                                                        <i class="bi bi-stop-circle"></i> Stop
+                                                    </button>
+                                                    <button class="btn btn-outline-secondary" id="refreshStatsBtn">
+                                                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <details class="mb-2">
+                                            <summary class="btn btn-outline-info btn-sm">Advanced Options</summary>
+                                            <div class="mt-2">
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-outline-warning btn-sm" id="resetSyncBtn">
+                                                        <i class="bi bi-arrow-clockwise"></i> Reset All to Pending
+                                                    </button>
+                                                    <button class="btn btn-outline-danger btn-sm" id="cleanupBtn">
+                                                        <i class="bi bi-trash"></i> Cleanup Old Entries
+                                                    </button>
+                                                </div>
+                                                <div class="form-text mt-1">
+                                                    Reset: Mark all photos as pending for re-sync<br>
+                                                    Cleanup: Remove completed entries older than 30 days
+                                                </div>
+                                            </div>
+                                        </details>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h6 class="mb-3"><i class="bi bi-exclamation-triangle text-danger"></i> Danger Zone</h6>
+                                
+                                <div class="setting-group">
+                                    <div class="alert alert-warning">
+                                        <strong><i class="bi bi-exclamation-triangle"></i> Warning:</strong> These operations are irreversible and will permanently delete all data!
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label setting-label">Reset Storage</label>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-danger btn-sm" id="resetLocalBtn">
+                                                <i class="bi bi-trash"></i> Reset Local Only
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" id="resetAllBtn">
+                                                <i class="bi bi-trash3"></i> Reset Everything
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-text">
+                                        <strong>Reset Local Only:</strong> Deletes local database, photos cache, logs, and settings.<br>
+                                        <strong>Reset Everything:</strong> Deletes ALL data from both local storage and network drive.
+                                        This includes all downloaded photos, database, API keys, logs, and settings.
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-group">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label setting-label">Application Control</label>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" id="shutdownAppBtn">
+                                            <i class="bi bi-power"></i> Shutdown Application
+                                        </button>
+                                    </div>
+                                    <div class="form-text">
+                                        Gracefully shutdown the application. This will trigger proper database sync and cleanup procedures.
+                                        The web interface will become unavailable until you restart the application.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h6 class="mb-3"><i class="bi bi-tags"></i> Tag Management</h6>
+                                
+                                <div class="setting-group">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label setting-label">Photo Tags</label>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="refreshAllTagsBtn">
+                                            <i class="bi bi-arrow-clockwise"></i> Refresh Missing Tags
+                                        </button>
+                                    </div>
+                                    <div class="form-text">
+                                        Refresh tags for photos that don't have any tags by fetching metadata from Unsplash API.
+                                        This is useful for photos downloaded before tag support was implemented.
+                                    </div>
+                                    <div id="tagRefreshStatus" class="mt-2" style="display: none;">
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                 id="tagRefreshProgress" role="progressbar" 
+                                                 style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                        <small class="text-muted" id="tagRefreshText">Preparing...</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
                                 <h6 class="mb-3"><i class="bi bi-toggles"></i> Application Behavior</h6>
                                 
                                 <div class="setting-group">
@@ -498,6 +698,291 @@
             }
         });
         
+        // Refresh all missing tags
+        document.getElementById('refreshAllTagsBtn').addEventListener('click', function() {
+            if (confirm('This will fetch tags from Unsplash API for all photos that don\'t have any tags. This may take some time and use API requests. Continue?')) {
+                const refreshBtn = document.getElementById('refreshAllTagsBtn');
+                const statusDiv = document.getElementById('tagRefreshStatus');
+                const progressBar = document.getElementById('tagRefreshProgress');
+                const statusText = document.getElementById('tagRefreshText');
+                
+                // Show loading state
+                refreshBtn.disabled = true;
+                refreshBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Processing...';
+                statusDiv.style.display = 'block';
+                progressBar.style.width = '0%';
+                statusText.textContent = 'Starting tag refresh process...';
+                
+                fetch('/api/photos/refresh-missing-tags', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        progressBar.style.width = '100%';
+                        progressBar.classList.remove('progress-bar-animated');
+                        statusText.textContent = data.message;
+                        
+                        showAlert('Tag refresh completed! ' + data.message, 'success');
+                        
+                        // Hide status after delay
+                        setTimeout(() => {
+                            statusDiv.style.display = 'none';
+                        }, 3000);
+                    } else {
+                        progressBar.classList.remove('progress-bar-animated');
+                        progressBar.classList.add('bg-danger');
+                        statusText.textContent = 'Failed: ' + data.message;
+                        showAlert('Failed to refresh tags: ' + data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    progressBar.classList.remove('progress-bar-animated');
+                    progressBar.classList.add('bg-danger');
+                    statusText.textContent = 'Error occurred during tag refresh';
+                    showAlert('Failed to refresh tags. Please try again.', 'danger');
+                })
+                .finally(() => {
+                    // Reset button state
+                    refreshBtn.disabled = false;
+                    refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Refresh Missing Tags';
+                });
+            }
+        });
+
+        // Database sync functionality
+        document.getElementById('syncStatusBtn').addEventListener('click', function() {
+            const statusDiv = document.getElementById('syncStatusDisplay');
+            const contentDiv = document.getElementById('syncStatusContent');
+            
+            if (statusDiv.style.display === 'none') {
+                statusDiv.style.display = 'block';
+                contentDiv.innerHTML = 'Loading sync status...';
+                
+                fetch('/api/database-sync/status')
+                .then(response => response.json())
+                .then(data => {
+                    let statusHtml = '';
+                    
+                    if (data.syncEnabled) {
+                        statusHtml = `
+                            <strong>Database Synchronization Status</strong><br>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <strong>Local Database:</strong><br>
+                                    Path: <code>${data.localDbPath}</code><br>
+                                    Exists: <span class="badge ${data.localDbExists ? 'bg-success' : 'bg-warning'}">${data.localDbExists ? 'Yes' : 'No'}</span><br>
+                                    ${data.localDbLastModified ? `Last Modified: ${new Date(data.localDbLastModified).toLocaleString()}` : ''}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Network Database:</strong><br>
+                                    Path: <code>${data.networkDbPath}</code><br>
+                                    Exists: <span class="badge ${data.networkDbExists ? 'bg-success' : 'bg-warning'}">${data.networkDbExists ? 'Yes' : 'No'}</span><br>
+                                    ${data.networkDbLastModified ? `Last Modified: ${new Date(data.networkDbLastModified).toLocaleString()}` : ''}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle"></i> Database is automatically synced to network every minute and on shutdown
+                                </small>
+                            </div>
+                        `;
+                    } else {
+                        statusHtml = '<strong>Database sync is disabled</strong> - using local storage only';
+                    }
+                    
+                    contentDiv.innerHTML = statusHtml;
+                })
+                .catch(error => {
+                    contentDiv.innerHTML = 'Error loading sync status: ' + error.message;
+                });
+            } else {
+                statusDiv.style.display = 'none';
+            }
+        });
+
+        document.getElementById('syncToNetworkBtn').addEventListener('click', function() {
+            if (confirm('Force sync local database to network drive now?')) {
+                const btn = this;
+                const originalText = btn.innerHTML;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Syncing...';
+                
+                fetch('/api/database-sync/sync-to-network', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                    } else {
+                        showAlert(data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Failed to sync to network: ' + error.message, 'danger');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            }
+        });
+
+        document.getElementById('restoreFromNetworkBtn').addEventListener('click', function() {
+            if (confirm('This will restore the local database from the network drive backup. Current local database will be backed up. Continue?')) {
+                const btn = this;
+                const originalText = btn.innerHTML;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Restoring...';
+                
+                fetch('/api/database-sync/restore-from-network', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message + (data.warning ? ' ' + data.warning : ''), 'success');
+                    } else {
+                        showAlert(data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Failed to restore from network: ' + error.message, 'danger');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            }
+        });
+
+        // Reset functionality with strong safety confirmations
+        document.getElementById('resetLocalBtn').addEventListener('click', function() {
+            if (confirm('⚠️ WARNING: This will delete ALL local data including:\n\n• Local database\n• Cached photos\n• Application logs\n• Local settings\n\nThis action is IRREVERSIBLE!\n\nType "RESET LOCAL" to confirm:') && 
+                prompt('Type "RESET LOCAL" to confirm this dangerous operation:') === 'RESET LOCAL') {
+                
+                const btn = this;
+                const originalText = btn.innerHTML;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Resetting...';
+                
+                fetch('/api/database-sync/reset-local-storage', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message + (data.warning ? ' ' + data.warning : ''), 'warning');
+                        // Recommend restart
+                        if (confirm('Local storage has been reset. Application restart is recommended. Restart now?')) {
+                            window.location.reload();
+                        }
+                    } else {
+                        showAlert(data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Failed to reset local storage: ' + error.message, 'danger');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            }
+        });
+
+        document.getElementById('resetAllBtn').addEventListener('click', function() {
+            if (confirm('🚨 EXTREME WARNING: This will delete EVERYTHING including:\n\n• ALL photos (local and network)\n• Complete database (local and network)\n• All API keys and settings\n• All logs and cache\n• Complete application state\n\nThis will reset the application to factory state!\nThis action is COMPLETELY IRREVERSIBLE!\n\nAre you absolutely sure?') &&
+                confirm('This is your FINAL warning!\n\nYou will lose:\n• All downloaded photos\n• All metadata and tags\n• All API keys\n• All configuration\n\nEverything will be permanently deleted from both local and network storage.\n\nContinue with complete reset?') &&
+                prompt('Type "DELETE EVERYTHING" to confirm this extremely dangerous operation:') === 'DELETE EVERYTHING') {
+                
+                const btn = this;
+                const originalText = btn.innerHTML;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Deleting Everything...';
+                
+                fetch('/api/database-sync/reset-all-storage', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message + (data.warning ? ' ' + data.warning : ''), 'success');
+                        // Force restart after complete reset
+                        setTimeout(() => {
+                            alert('Complete reset successful. The application will reload now.');
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        showAlert(data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Failed to reset all storage: ' + error.message, 'danger');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            }
+        });
+        
+        // Shutdown application
+        document.getElementById('shutdownAppBtn').addEventListener('click', function() {
+            if (confirm('⚠️ Shutdown Application\n\nThis will gracefully stop the application server. You will need to restart it manually to continue using the application.\n\nThe following will happen:\n• Database will be synced to network (if enabled)\n• All downloads will be stopped\n• Web interface will become unavailable\n• Application will exit cleanly\n\nDo you want to shutdown the application?')) {
+                
+                const btn = this;
+                const originalText = btn.innerHTML;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Shutting Down...';
+                
+                fetch('/settings/shutdown', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message, 'warning');
+                        // Show countdown and then redirect to a goodbye page
+                        let countdown = 5;
+                        const countdownInterval = setInterval(() => {
+                            btn.innerHTML = `<i class="bi bi-power"></i> Server stopping in ${countdown}s...`;
+                            countdown--;
+                            if (countdown < 0) {
+                                clearInterval(countdownInterval);
+                                // Show final message and then try to detect when server is down
+                                document.body.innerHTML = `
+                                    <div class="container mt-5">
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-6 text-center">
+                                                <div class="card">
+                                                    <div class="card-body py-5">
+                                                        <i class="bi bi-power text-danger" style="font-size: 4rem;"></i>
+                                                        <h3 class="mt-3">Application Shutdown</h3>
+                                                        <p class="text-muted">The Unsplash Downloader has been shut down successfully.</p>
+                                                        <p class="text-muted">To use the application again, please restart the server.</p>
+                                                        <div class="mt-4">
+                                                            <code class="bg-light p-2 rounded">java -jar target/unsplash-downloader-1.0-SNAPSHOT.jar</code>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        }, 1000);
+                    } else {
+                        showAlert(data.message, 'danger');
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                })
+                .catch(error => {
+                    showAlert('Failed to shutdown application: ' + error.message, 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+            }
+        });
+        
         // Remove individual recent items
         function removeRecentUsername(button) {
             const username = button.getAttribute('data-username');
@@ -773,6 +1258,209 @@
             div.textContent = text;
             return div.innerHTML;
         }
+        
+        // Metadata Sync Functionality
+        let metadataSyncInterval = null;
+        
+        function loadMetadataSyncStats() {
+            fetch('/metadata-sync/stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error loading metadata sync stats:', data.error);
+                        return;
+                    }
+                    
+                    // Update statistics
+                    document.getElementById('totalPhotosCount').textContent = data.total || 0;
+                    document.getElementById('completedCount').textContent = data.completed || 0;
+                    document.getElementById('pendingCount').textContent = data.pending || 0;
+                    document.getElementById('failedCount').textContent = data.failed || 0;
+                    
+                    // Update progress bar
+                    const percentage = data.completionPercentage || 0;
+                    document.getElementById('syncProgressBar').style.width = percentage + '%';
+                    document.getElementById('completionPercentage').textContent = percentage.toFixed(1) + '%';
+                    
+                    // Update status text
+                    const syncInProgress = data.syncInProgress || false;
+                    const needingSync = data.needingSync || 0;
+                    
+                    let statusText = 'Ready';
+                    if (syncInProgress) {
+                        statusText = 'Sync in progress...';
+                    } else if (needingSync > 0) {
+                        statusText = needingSync + ' photos need syncing';
+                    } else if (data.completed > 0) {
+                        statusText = 'All photos synced';
+                    }
+                    
+                    document.getElementById('syncStatusText').textContent = statusText;
+                    
+                    // Update button states
+                    const startBtn = document.getElementById('startSyncBtn');
+                    const stopBtn = document.getElementById('stopSyncBtn');
+                    
+                    if (syncInProgress) {
+                        startBtn.disabled = true;
+                        stopBtn.disabled = false;
+                        startBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Syncing...';
+                    } else {
+                        startBtn.disabled = false;
+                        stopBtn.disabled = true;
+                        startBtn.innerHTML = '<i class="bi bi-play-circle"></i> Start Sync';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading metadata sync stats:', error);
+                });
+        }
+        
+        // Initialize metadata sync
+        document.getElementById('initializeBtn').addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Initializing...';
+            
+            fetch('/metadata-sync/initialize', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Metadata sync initialized successfully');
+                    loadMetadataSyncStats();
+                } else {
+                    alert('Failed to initialize: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to initialize metadata sync');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-plus-circle"></i> Initialize Sync';
+            });
+        });
+        
+        // Start metadata sync
+        document.getElementById('startSyncBtn').addEventListener('click', function() {
+            const batchSize = document.getElementById('batchSizeSelect').value;
+            
+            fetch('/metadata-sync/start?batchSize=' + batchSize, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Metadata sync started');
+                    // Start polling for updates
+                    if (metadataSyncInterval) clearInterval(metadataSyncInterval);
+                    metadataSyncInterval = setInterval(loadMetadataSyncStats, 2000);
+                    loadMetadataSyncStats();
+                } else {
+                    alert('Failed to start sync: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to start metadata sync');
+            });
+        });
+        
+        // Stop metadata sync
+        document.getElementById('stopSyncBtn').addEventListener('click', function() {
+            fetch('/metadata-sync/stop', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Stop signal sent to metadata sync');
+                    // Stop polling
+                    if (metadataSyncInterval) {
+                        clearInterval(metadataSyncInterval);
+                        metadataSyncInterval = null;
+                    }
+                    loadMetadataSyncStats();
+                } else {
+                    alert('Failed to stop sync: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to stop metadata sync');
+            });
+        });
+        
+        // Refresh stats
+        document.getElementById('refreshStatsBtn').addEventListener('click', function() {
+            loadMetadataSyncStats();
+        });
+        
+        // Reset sync entries
+        document.getElementById('resetSyncBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset all metadata sync entries to pending? This will re-sync all photos.')) {
+                const btn = this;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Resetting...';
+                
+                fetch('/metadata-sync/reset', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('All sync entries reset to pending');
+                        loadMetadataSyncStats();
+                    } else {
+                        alert('Failed to reset: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to reset sync entries');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Reset All to Pending';
+                });
+            }
+        });
+        
+        // Cleanup old entries
+        document.getElementById('cleanupBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to cleanup completed sync entries older than 30 days?')) {
+                const btn = this;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Cleaning...';
+                
+                fetch('/metadata-sync/cleanup?daysToKeep=30', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Cleanup completed');
+                        loadMetadataSyncStats();
+                    } else {
+                        alert('Failed to cleanup: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to cleanup entries');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-trash"></i> Cleanup Old Entries';
+                });
+            }
+        });
+        
+        // Load initial metadata sync stats when page loads
+        loadMetadataSyncStats();
     </script>
 </body>
 </html>
