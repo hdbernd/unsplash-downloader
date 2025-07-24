@@ -14,6 +14,7 @@ A comprehensive Java Spring Boot application for downloading and managing Unspla
 ### Metadata & Organization  
 - **Complete Tag Retrieval**: Automatically fetches all tags from Unsplash API for each photo
 - **EXIF Metadata Embedding**: Photo descriptions, tags, and photographer info embedded in images
+- **Metadata Sync System**: Dedicated system to write metadata into EXIF data of existing photos
 - **Database Storage**: H2 database for fast photo metadata search and browsing with full tag support
 - **Thumbnail Generation**: Automatic thumbnail creation for web interface
 - **Full-text Search**: Search photos by description, tags, or photographer
@@ -25,6 +26,7 @@ A comprehensive Java Spring Boot application for downloading and managing Unspla
 - **Advanced Filtering**: Filter by photographer, tags, or search terms
 - **Collection Statistics**: View download stats and collection analytics
 - **API Key Management**: Add/remove/validate API keys through web interface
+- **Metadata Sync Management**: Batch process existing photos to embed EXIF metadata
 
 ## Prerequisites
 
@@ -126,6 +128,7 @@ Features available in web mode:
 - Full-text search and filtering
 - Collection statistics and analytics
 - Thumbnail generation
+- **Metadata sync system** for batch EXIF metadata processing
 
 ### Command Line Mode  
 For CLI-only batch downloading:
@@ -257,6 +260,54 @@ Logs are written to:
 - Console
 - `logs/unsplash-downloader.log`
 - Daily rolling log files
+
+## Metadata Sync System
+
+The application includes a comprehensive metadata sync system that processes your existing photo collection to embed EXIF metadata into the image files themselves.
+
+### What Gets Synced
+- **Photo Descriptions**: Written to EXIF Image Description field
+- **Tags**: Added as EXIF User Comment with "Tags: tag1, tag2, tag3" format  
+- **Photographer Info**: Added to EXIF Artist field
+- **Copyright Info**: Added to EXIF Copyright field with Unsplash attribution
+
+### How It Works
+1. **Smart Detection**: Only processes photos that haven't been synced yet
+2. **File Change Detection**: Uses SHA-256 hashing to detect if files have been modified
+3. **JPEG Only**: Safely processes only JPEG files (.jpg, .jpeg)
+4. **Status Tracking**: Maintains detailed sync status for each photo in dedicated database
+5. **Batch Processing**: Configurable batch sizes with progress tracking
+6. **Retry Logic**: Automatic retry for failed sync operations
+
+### Using the Metadata Sync
+
+**Via Web Interface:**
+1. Navigate to **Settings** page in the web interface
+2. Go to the **"Metadata Sync"** section
+3. Click **"Initialize Sync"** to scan your photo collection
+4. Configure batch size (default: 100 photos per batch)
+5. Click **"Start Sync"** to begin processing
+6. Monitor real-time progress with status indicators
+
+**Sync Status Types:**
+- **PENDING**: Photo ready to be processed
+- **IN_PROGRESS**: Currently being processed
+- **COMPLETED**: Successfully synced metadata
+- **FAILED**: Processing failed (with retry capability)
+- **SKIPPED**: Non-JPEG file or file not found
+- **ERROR**: Unexpected error occurred
+
+**Management Options:**
+- **Stop Sync**: Gracefully stop current sync operation
+- **Reset All**: Mark all photos as pending for re-sync
+- **Cleanup**: Remove old completed sync records
+
+### Benefits
+- **Portable Metadata**: Photo information travels with the image file
+- **Photo Management Software**: Works with Lightroom, Bridge, and other EXIF-aware tools
+- **Future-Proof**: Metadata remains accessible even without the database
+- **Search Enhancement**: Many photo organizers can search EXIF metadata
+- **Backup Safety**: Metadata preserved even if database is lost
 
 ## Data Storage
 
