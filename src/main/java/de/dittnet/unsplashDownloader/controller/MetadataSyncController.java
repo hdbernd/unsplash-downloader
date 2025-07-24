@@ -167,6 +167,30 @@ public class MetadataSyncController {
     }
     
     /**
+     * Add newly downloaded photos to sync system
+     */
+    @PostMapping("/add-new-photos")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> addNewPhotos() {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            metadataSyncService.addNewPhotosToSync();
+            
+            response.put("success", true);
+            response.put("message", "New photos have been added to metadata sync system");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Failed to add new photos to sync", e);
+            response.put("success", false);
+            response.put("message", "Failed to add new photos: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+    
+    /**
      * Get sync entries with pagination
      */
     @GetMapping("/entries")

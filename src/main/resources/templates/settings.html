@@ -198,10 +198,10 @@
                                         <div class="col-md-12">
                                             <div class="card">
                                                 <div class="card-body">
-                                                    <h6 class="card-title">Sync Status</h6>
-                                                    <div class="row text-center" id="metadataSyncStats">
+                                                    <h6 class="card-title">Overview</h6>
+                                                    <div class="row text-center mb-3" id="metadataSyncOverview">
                                                         <div class="col-3">
-                                                            <div class="h5 text-primary mb-0" id="totalPhotosCount">--</div>
+                                                            <div class="h5 text-primary mb-0" id="totalPhotosInDatabase">--</div>
                                                             <small class="text-muted">Total Photos</small>
                                                         </div>
                                                         <div class="col-3">
@@ -209,19 +209,51 @@
                                                             <small class="text-muted">Synced</small>
                                                         </div>
                                                         <div class="col-3">
-                                                            <div class="h5 text-warning mb-0" id="pendingCount">--</div>
-                                                            <small class="text-muted">Pending</small>
+                                                            <div class="h5 text-warning mb-0" id="photosDueForSync">--</div>
+                                                            <small class="text-muted">Due for Sync</small>
                                                         </div>
                                                         <div class="col-3">
-                                                            <div class="h5 text-danger mb-0" id="failedCount">--</div>
-                                                            <small class="text-muted">Failed</small>
+                                                            <div class="h5 text-info mb-0" id="photosNotInSync">--</div>
+                                                            <small class="text-muted">Not in Sync System</small>
                                                         </div>
                                                     </div>
+                                                    
+                                                    <h6 class="card-title">Detailed Stats</h6>
+                                                    <div class="row text-center" id="metadataSyncStats">
+                                                        <div class="col-2">
+                                                            <div class="h6 text-secondary mb-0" id="totalInSync">--</div>
+                                                            <small class="text-muted">In Sync System</small>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="h6 text-warning mb-0" id="pendingCount">--</div>
+                                                            <small class="text-muted">Pending</small>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="h6 text-danger mb-0" id="failedCount">--</div>
+                                                            <small class="text-muted">Failed</small>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="h6 text-danger mb-0" id="errorCount">--</div>
+                                                            <small class="text-muted">Error</small>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="h6 text-muted mb-0" id="skippedCount">--</div>
+                                                            <small class="text-muted">Skipped</small>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <div class="h6 text-primary mb-0" id="inProgressCount">--</div>
+                                                            <small class="text-muted">In Progress</small>
+                                                        </div>
+                                                    </div>
+                                                    
                                                     <div class="mt-3">
-                                                        <div class="progress" style="height: 8px;">
+                                                        <div class="progress" style="height: 10px;">
                                                             <div class="progress-bar bg-success" id="syncProgressBar" style="width: 0%"></div>
                                                         </div>
-                                                        <small class="text-muted">Completion: <span id="completionPercentage">0%</span></small>
+                                                        <div class="d-flex justify-content-between mt-1">
+                                                            <small class="text-muted">Overall Progress: <span id="overallCompletionPercentage">0%</span></small>
+                                                            <small class="text-muted">Sync System: <span id="completionPercentage">0%</span></small>
+                                                        </div>
                                                     </div>
                                                     <div class="mt-2">
                                                         <small class="text-muted" id="syncStatusText">Ready</small>
@@ -249,6 +281,9 @@
                                                 <button class="btn btn-outline-primary" id="initializeBtn">
                                                     <i class="bi bi-plus-circle"></i> Initialize Sync
                                                 </button>
+                                                <button class="btn btn-outline-info" id="addNewPhotosBtn">
+                                                    <i class="bi bi-plus-square"></i> Add New Photos
+                                                </button>
                                                 <div class="btn-group" role="group">
                                                     <button class="btn btn-success" id="startSyncBtn">
                                                         <i class="bi bi-play-circle"></i> Start Sync
@@ -261,6 +296,14 @@
                                                     </button>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <div class="form-text">
+                                            <strong>Initialize Sync:</strong> Set up sync for all photos in database<br>
+                                            <strong>Add New Photos:</strong> Add recently downloaded photos to sync system<br>
+                                            <strong>Start Sync:</strong> Begin processing photos with metadata embedding
                                         </div>
                                     </div>
                                     
@@ -1271,16 +1314,26 @@
                         return;
                     }
                     
-                    // Update statistics
-                    document.getElementById('totalPhotosCount').textContent = data.total || 0;
+                    // Update overview statistics
+                    document.getElementById('totalPhotosInDatabase').textContent = data.totalPhotosInDatabase || 0;
                     document.getElementById('completedCount').textContent = data.completed || 0;
+                    document.getElementById('photosDueForSync').textContent = data.photosDueForSync || 0;
+                    document.getElementById('photosNotInSync').textContent = data.photosNotInSync || 0;
+                    
+                    // Update detailed statistics
+                    document.getElementById('totalInSync').textContent = data.totalInSync || 0;
                     document.getElementById('pendingCount').textContent = data.pending || 0;
                     document.getElementById('failedCount').textContent = data.failed || 0;
+                    document.getElementById('errorCount').textContent = data.error || 0;
+                    document.getElementById('skippedCount').textContent = data.skipped || 0;
+                    document.getElementById('inProgressCount').textContent = data.syncInProgress ? '1' : '0';
                     
-                    // Update progress bar
-                    const percentage = data.completionPercentage || 0;
-                    document.getElementById('syncProgressBar').style.width = percentage + '%';
-                    document.getElementById('completionPercentage').textContent = percentage.toFixed(1) + '%';
+                    // Update progress bars
+                    const overallPercentage = data.overallCompletionPercentage || 0;
+                    const syncPercentage = data.completionPercentage || 0;
+                    document.getElementById('syncProgressBar').style.width = overallPercentage + '%';
+                    document.getElementById('overallCompletionPercentage').textContent = overallPercentage.toFixed(1) + '%';
+                    document.getElementById('completionPercentage').textContent = syncPercentage.toFixed(1) + '%';
                     
                     // Update status text
                     const syncInProgress = data.syncInProgress || false;
@@ -1397,6 +1450,34 @@
         // Refresh stats
         document.getElementById('refreshStatsBtn').addEventListener('click', function() {
             loadMetadataSyncStats();
+        });
+        
+        // Add new photos to sync system
+        document.getElementById('addNewPhotosBtn').addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Adding...';
+            
+            fetch('/metadata-sync/add-new-photos', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('New photos added to sync system');
+                    loadMetadataSyncStats(); // Refresh stats
+                } else {
+                    alert('Failed to add new photos: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error adding new photos:', error);
+                alert('Failed to add new photos');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-plus-square"></i> Add New Photos';
+            });
         });
         
         // Reset sync entries

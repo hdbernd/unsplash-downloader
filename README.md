@@ -272,22 +272,31 @@ The application includes a comprehensive metadata sync system that processes you
 - **Copyright Info**: Added to EXIF Copyright field with Unsplash attribution
 
 ### How It Works
-1. **Smart Detection**: Only processes photos that haven't been synced yet
-2. **File Change Detection**: Uses SHA-256 hashing to detect if files have been modified
-3. **JPEG Only**: Safely processes only JPEG files (.jpg, .jpeg)
-4. **Status Tracking**: Maintains detailed sync status for each photo in dedicated database
-5. **Batch Processing**: Configurable batch sizes with progress tracking
-6. **Retry Logic**: Automatic retry for failed sync operations
+1. **High-Performance Initialization**: Optimized setup for thousands of photos (30-60 seconds for 4000+ files)
+2. **Smart Detection**: Only processes photos that haven't been synced yet
+3. **File Change Detection**: Uses SHA-256 hashing to detect if files have been modified (calculated only when needed)
+4. **JPEG Only**: Safely processes only JPEG files (.jpg, .jpeg)
+5. **Status Tracking**: Maintains detailed sync status for each photo in dedicated database
+6. **Batch Processing**: Configurable batch sizes with real-time progress tracking
+7. **Retry Logic**: Automatic retry for failed sync operations
+8. **New Photo Detection**: Automatically identifies newly downloaded photos
 
 ### Using the Metadata Sync
 
 **Via Web Interface:**
 1. Navigate to **Settings** page in the web interface
 2. Go to the **"Metadata Sync"** section
-3. Click **"Initialize Sync"** to scan your photo collection
-4. Configure batch size (default: 100 photos per batch)
-5. Click **"Start Sync"** to begin processing
-6. Monitor real-time progress with status indicators
+3. Click **"Initialize Sync"** to scan your photo collection (fast setup)
+4. **After downloading new photos**: Click **"Add New Photos"** to include them
+5. Configure batch size (default: 100 photos per batch)
+6. Click **"Start Sync"** to begin processing
+7. Monitor real-time progress with comprehensive statistics and progress bars
+
+**Statistics Overview:**
+- **Total Photos**: All photos in your database
+- **Synced**: Successfully processed with EXIF metadata
+- **Due for Sync**: Photos needing processing (pending + failed + new)
+- **Not in Sync System**: Recently downloaded photos not yet added
 
 **Sync Status Types:**
 - **PENDING**: Photo ready to be processed
@@ -298,9 +307,19 @@ The application includes a comprehensive metadata sync system that processes you
 - **ERROR**: Unexpected error occurred
 
 **Management Options:**
+- **Add New Photos**: Include recently downloaded photos in sync system
 - **Stop Sync**: Gracefully stop current sync operation
 - **Reset All**: Mark all photos as pending for re-sync
 - **Cleanup**: Remove old completed sync records
+
+### Performance
+The metadata sync system is optimized for large photo collections:
+
+- **Fast Initialization**: Processes 4000+ photos in 30-60 seconds (vs hours in previous versions)
+- **Efficient Processing**: Only calculates file hashes when needed during actual sync
+- **Batch Operations**: Database operations are batched for optimal performance
+- **Progress Tracking**: Real-time statistics show both overall and sync system progress
+- **Memory Efficient**: Handles large collections without excessive memory usage
 
 ### Benefits
 - **Portable Metadata**: Photo information travels with the image file

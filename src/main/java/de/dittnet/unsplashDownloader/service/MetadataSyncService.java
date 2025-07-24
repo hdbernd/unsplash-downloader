@@ -62,25 +62,33 @@ public class MetadataSyncService {
             List<PhotoEntity> allPhotos = photoService.getAllPhotosForSync();
             logger.info("Found {} total photos in database", allPhotos.size());
             
-            int newEntries = 0;
+            // Get all existing sync records in one query to avoid N+1 problem
+            Set<String> existingPhotoIds = metadataSyncRepository.findAll().stream()
+                .map(MetadataSyncEntity::getPhotoId)
+                .collect(Collectors.toSet());
+            logger.info("Found {} existing sync records", existingPhotoIds.size());
+            
+            List<MetadataSyncEntity> newEntries = new ArrayList<>();
             String userOutputPath = userSettingsService.getLastOutputPath();
             
+            int processed = 0;
             for (PhotoEntity photo : allPhotos) {
-                // Check if sync record already exists
-                if (!metadataSyncRepository.findByPhotoId(photo.getId()).isPresent()) {
+                // Skip if sync record already exists
+                if (!existingPhotoIds.contains(photo.getId())) {
                     // Determine file path
                     String filePath = getPhotoFilePath(photo, userOutputPath);
                     
-                    // Create new sync entry
+                    // Create new sync entry - initialize with minimal data for speed
                     MetadataSyncEntity syncEntity = new MetadataSyncEntity(photo.getId(), filePath);
                     
-                    // Check if file exists and set initial state
+                    // Quick file existence check only - skip expensive hash calculation for now
                     Path file = Paths.get(filePath);
                     if (Files.exists(file)) {
                         try {
                             syncEntity.setFileSize(Files.size(file));
                             syncEntity.setLastModified(LocalDateTime.now());
-                            syncEntity.setFileHash(calculateFileHash(file));
+                            // Skip hash calculation during initialization for performance
+                            // Hash will be calculated during actual sync process
                         } catch (Exception e) {
                             logger.warn("Failed to get file info for {}: {}", filePath, e.getMessage());
                         }
@@ -88,12 +96,22 @@ public class MetadataSyncService {
                         syncEntity.markAsSkipped("File not found: " + filePath);
                     }
                     
-                    metadataSyncRepository.save(syncEntity);
-                    newEntries++;
+                    newEntries.add(syncEntity);
+                }
+                
+                processed++;
+                if (processed % 500 == 0) {
+                    logger.info("Processed {}/{} photos for initialization", processed, allPhotos.size());
                 }
             }
             
-            logger.info("Initialized {} new metadata sync entries", newEntries);
+            // Batch save all new entries for much better performance
+            if (!newEntries.isEmpty()) {
+                logger.info("Saving {} new sync entries to database...", newEntries.size());
+                metadataSyncRepository.saveAll(newEntries);
+            }
+            
+            logger.info("Initialized {} new metadata sync entries", newEntries.size());
         } catch (Exception e) {
             logger.error("Failed to initialize metadata sync", e);
         }
@@ -193,12 +211,21 @@ public class MetadataSyncService {
                 return false;
             }
             
-            // Check if file has changed since last check
-            String currentHash = calculateFileHash(filePath);
-            if (syncEntity.getFileHash() != null && !syncEntity.getFileHash().equals(currentHash)) {
-                logger.info("File changed for photo {}, updating hash", photo.getId());
+            // Calculate or update file hash if not present or file size changed
+            boolean needsHashUpdate = syncEntity.getFileHash() == null;
+            long currentFileSize = Files.size(filePath);
+            if (syncEntity.getFileSize() == null || !syncEntity.getFileSize().equals(currentFileSize)) {
+                needsHashUpdate = true;
+                syncEntity.setFileSize(currentFileSize);
+            }
+            
+            if (needsHashUpdate) {
+                logger.debug("Calculating file hash for photo {}", photo.getId());
+                String currentHash = calculateFileHash(filePath);
+                if (syncEntity.getFileHash() != null && !syncEntity.getFileHash().equals(currentHash)) {
+                    logger.info("File changed for photo {}, updating hash", photo.getId());
+                }
                 syncEntity.setFileHash(currentHash);
-                syncEntity.setFileSize(Files.size(filePath));
             }
             
             // Only process JPEG files
@@ -370,24 +397,59 @@ public class MetadataSyncService {
     }
     
     /**
-     * Get sync statistics
+     * Get comprehensive sync statistics including overview totals
      */
     public Map<String, Object> getSyncStatistics() {
         Map<String, Object> stats = new HashMap<>();
         
         try {
+            // Get total photos in database
+            long totalPhotosInDatabase = photoService.getTotalPhotosCount();
+            stats.put("totalPhotosInDatabase", totalPhotosInDatabase);
+            
+            // Get sync statistics from repository
             Object[] result = metadataSyncRepository.getSyncStatistics();
             if (result != null && result.length >= 6) {
-                stats.put("total", ((Number) result[0]).longValue());
-                stats.put("completed", ((Number) result[1]).longValue());
-                stats.put("pending", ((Number) result[2]).longValue());
-                stats.put("failed", ((Number) result[3]).longValue());
-                stats.put("error", ((Number) result[4]).longValue());
-                stats.put("skipped", ((Number) result[5]).longValue());
-                
-                long total = ((Number) result[0]).longValue();
+                long totalInSync = ((Number) result[0]).longValue();
                 long completed = ((Number) result[1]).longValue();
-                stats.put("completionPercentage", total > 0 ? (completed * 100.0 / total) : 0.0);
+                long pending = ((Number) result[2]).longValue();
+                long failed = ((Number) result[3]).longValue();
+                long error = ((Number) result[4]).longValue();
+                long skipped = ((Number) result[5]).longValue();
+                
+                stats.put("totalInSync", totalInSync);
+                stats.put("completed", completed);
+                stats.put("pending", pending);
+                stats.put("failed", failed);
+                stats.put("error", error);
+                stats.put("skipped", skipped);
+                
+                // Calculate completion percentage based on sync entries
+                stats.put("completionPercentage", totalInSync > 0 ? (completed * 100.0 / totalInSync) : 0.0);
+                
+                // Calculate photos not yet in sync system (newly downloaded)
+                long photosNotInSync = totalPhotosInDatabase - totalInSync;
+                stats.put("photosNotInSync", Math.max(0, photosNotInSync));
+                
+                // Photos due for syncing (pending + failed + error + not in sync system)
+                long photosDueForSync = pending + failed + error + photosNotInSync;
+                stats.put("photosDueForSync", photosDueForSync);
+                
+                // Overall progress (completed vs all photos in database)
+                stats.put("overallCompletionPercentage", totalPhotosInDatabase > 0 ? 
+                    (completed * 100.0 / totalPhotosInDatabase) : 0.0);
+            } else {
+                // No sync data available
+                stats.put("totalInSync", 0L);
+                stats.put("completed", 0L);
+                stats.put("pending", 0L);
+                stats.put("failed", 0L);
+                stats.put("error", 0L);
+                stats.put("skipped", 0L);
+                stats.put("completionPercentage", 0.0);
+                stats.put("photosNotInSync", totalPhotosInDatabase);
+                stats.put("photosDueForSync", totalPhotosInDatabase);
+                stats.put("overallCompletionPercentage", 0.0);
             }
             
             stats.put("syncInProgress", syncInProgress);
@@ -433,6 +495,67 @@ public class MetadataSyncService {
         
         metadataSyncRepository.saveAll(allEntries);
         logger.info("Reset {} sync entries", allEntries.size());
+    }
+    
+    /**
+     * Add newly downloaded photos to sync system
+     * This should be called after new photos are downloaded
+     */
+    @Transactional
+    public void addNewPhotosToSync() {
+        logger.info("Checking for new photos to add to metadata sync system...");
+        
+        try {
+            // Get all photos from database
+            List<PhotoEntity> allPhotos = photoService.getAllPhotosForSync();
+            
+            // Get existing sync record photo IDs
+            Set<String> existingPhotoIds = metadataSyncRepository.findAll().stream()
+                .map(MetadataSyncEntity::getPhotoId)
+                .collect(Collectors.toSet());
+            
+            // Find photos not in sync system
+            List<PhotoEntity> newPhotos = allPhotos.stream()
+                .filter(photo -> !existingPhotoIds.contains(photo.getId()))
+                .collect(Collectors.toList());
+            
+            if (newPhotos.isEmpty()) {
+                logger.info("No new photos found to add to sync system");
+                return;
+            }
+            
+            logger.info("Found {} new photos to add to sync system", newPhotos.size());
+            
+            List<MetadataSyncEntity> newSyncEntries = new ArrayList<>();
+            String userOutputPath = userSettingsService.getLastOutputPath();
+            
+            for (PhotoEntity photo : newPhotos) {
+                String filePath = getPhotoFilePath(photo, userOutputPath);
+                MetadataSyncEntity syncEntity = new MetadataSyncEntity(photo.getId(), filePath);
+                
+                // Quick file existence and size check
+                Path file = Paths.get(filePath);
+                if (Files.exists(file)) {
+                    try {
+                        syncEntity.setFileSize(Files.size(file));
+                        syncEntity.setLastModified(LocalDateTime.now());
+                    } catch (Exception e) {
+                        logger.warn("Failed to get file info for {}: {}", filePath, e.getMessage());
+                    }
+                } else {
+                    syncEntity.markAsSkipped("File not found: " + filePath);
+                }
+                
+                newSyncEntries.add(syncEntity);
+            }
+            
+            // Batch save new entries
+            metadataSyncRepository.saveAll(newSyncEntries);
+            logger.info("Added {} new photos to metadata sync system", newSyncEntries.size());
+            
+        } catch (Exception e) {
+            logger.error("Failed to add new photos to sync system", e);
+        }
     }
     
     /**
