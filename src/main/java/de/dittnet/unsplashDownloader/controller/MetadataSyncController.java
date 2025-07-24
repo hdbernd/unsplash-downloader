@@ -343,4 +343,40 @@ public class MetadataSyncController {
             return ResponseEntity.internalServerError().body(response);
         }
     }
+    
+    /**
+     * Get sync status for specific photo
+     */
+    @GetMapping("/photo/{photoId}/status")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getPhotoSyncStatus(@PathVariable String photoId) {
+        try {
+            Map<String, Object> status = metadataSyncService.getPhotoSyncStatus(photoId);
+            return ResponseEntity.ok(status);
+            
+        } catch (Exception e) {
+            logger.error("Failed to get sync status for photo {}", photoId, e);
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Failed to get sync status: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
+        }
+    }
+    
+    /**
+     * Get EXIF data for specific photo
+     */
+    @GetMapping("/photo/{photoId}/exif")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getPhotoExifData(@PathVariable String photoId) {
+        try {
+            Map<String, Object> exifData = metadataSyncService.readExifData(photoId);
+            return ResponseEntity.ok(exifData);
+            
+        } catch (Exception e) {
+            logger.error("Failed to get EXIF data for photo {}", photoId, e);
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Failed to read EXIF data: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(error);
+        }
+    }
 }

@@ -567,4 +567,144 @@ public class MetadataSyncService {
         metadataSyncRepository.deleteOldCompletedEntries(cutoffDate);
         logger.info("Cleaned up completed sync entries older than {} days", daysToKeep);
     }
+    
+    /**
+     * Get sync status for a specific photo
+     */
+    public Map<String, Object> getPhotoSyncStatus(String photoId) {
+        Map<String, Object> status = new HashMap<>();
+        
+        try {
+            Optional<MetadataSyncEntity> syncEntity = metadataSyncRepository.findByPhotoId(photoId);
+            
+            if (syncEntity.isPresent()) {
+                MetadataSyncEntity entity = syncEntity.get();
+                status.put("photoId", photoId);
+                status.put("syncStatus", entity.getSyncStatus().toString());
+                status.put("syncedAt", entity.getSyncedAt());
+                status.put("errorMessage", entity.getErrorMessage());
+                status.put("retryCount", entity.getRetryCount());
+                status.put("fileSize", entity.getFileSize());
+                status.put("lastModified", entity.getLastModified());
+                status.put("hasSyncRecord", true);
+            } else {
+                status.put("photoId", photoId);
+                status.put("syncStatus", "NOT_IN_SYNC_SYSTEM");
+                status.put("hasSyncRecord", false);
+            }
+            
+        } catch (Exception e) {
+            logger.error("Failed to get sync status for photo {}", photoId, e);
+            status.put("error", "Failed to get sync status: " + e.getMessage());
+        }
+        
+        return status;
+    }
+    
+    /**
+     * Read EXIF metadata from image file
+     */
+    public Map<String, Object> readExifData(String photoId) {
+        Map<String, Object> exifData = new HashMap<>();
+        
+        try {
+            // Get photo info to find file path
+            Optional<PhotoEntity> photoOpt = photoService.getPhotoById(photoId);
+            if (!photoOpt.isPresent()) {
+                exifData.put("error", "Photo not found in database");
+                return exifData;
+            }
+            
+            PhotoEntity photo = photoOpt.get();
+            String userOutputPath = userSettingsService.getLastOutputPath();
+            String filePath = getPhotoFilePath(photo, userOutputPath);
+            
+            Path file = Paths.get(filePath);
+            if (!Files.exists(file)) {
+                exifData.put("error", "Image file not found: " + filePath);
+                return exifData;
+            }
+            
+            // Read image metadata
+            ImageMetadata metadata = Imaging.getMetadata(file.toFile());
+            exifData.put("hasMetadata", metadata != null);
+            
+            if (metadata instanceof JpegImageMetadata) {
+                JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+                TiffImageMetadata exifMetadata = jpegMetadata.getExif();
+                
+                if (exifMetadata != null) {
+                    // Extract common EXIF fields
+                    Map<String, String> exifFields = new HashMap<>();
+                    
+                    // Description
+                    try {
+                        String[] descriptionArray = exifMetadata.getFieldValue(TiffTagConstants.TIFF_TAG_IMAGE_DESCRIPTION);
+                        if (descriptionArray != null && descriptionArray.length > 0) {
+                            exifFields.put("Image Description", descriptionArray[0]);
+                        }
+                    } catch (Exception e) { /* Field not present */ }
+                    
+                    // Artist
+                    try {
+                        String[] artistArray = exifMetadata.getFieldValue(TiffTagConstants.TIFF_TAG_ARTIST);
+                        if (artistArray != null && artistArray.length > 0) {
+                            exifFields.put("Artist", artistArray[0]);
+                        }
+                    } catch (Exception e) { /* Field not present */ }
+                    
+                    // Copyright
+                    try {
+                        String[] copyrightArray = exifMetadata.getFieldValue(TiffTagConstants.TIFF_TAG_COPYRIGHT);
+                        if (copyrightArray != null && copyrightArray.length > 0) {
+                            exifFields.put("Copyright", copyrightArray[0]);
+                        }
+                    } catch (Exception e) { /* Field not present */ }
+                    
+                    // Software
+                    try {
+                        String[] softwareArray = exifMetadata.getFieldValue(TiffTagConstants.TIFF_TAG_SOFTWARE);
+                        if (softwareArray != null && softwareArray.length > 0) {
+                            exifFields.put("Software", softwareArray[0]);
+                        }
+                    } catch (Exception e) { /* Field not present */ }
+                    
+                    // User Comment
+                    try {
+                        Object userCommentValue = exifMetadata.getFieldValue(ExifTagConstants.EXIF_TAG_USER_COMMENT);
+                        if (userCommentValue != null) {
+                            if (userCommentValue instanceof String[]) {
+                                String[] userCommentArray = (String[]) userCommentValue;
+                                if (userCommentArray.length > 0) {
+                                    exifFields.put("User Comment", userCommentArray[0]);
+                                }
+                            } else {
+                                exifFields.put("User Comment", userCommentValue.toString());
+                            }
+                        }
+                    } catch (Exception e) { /* Field not present */ }
+                    
+                    exifData.put("exifFields", exifFields);
+                    exifData.put("hasExifData", !exifFields.isEmpty());
+                } else {
+                    exifData.put("hasExifData", false);
+                    exifData.put("message", "No EXIF data found in image");
+                }
+            } else {
+                exifData.put("hasExifData", false);
+                exifData.put("message", "Not a JPEG image or no metadata available");
+            }
+            
+            // Add file info
+            exifData.put("filePath", filePath);
+            exifData.put("fileSize", Files.size(file));
+            exifData.put("lastModified", Files.getLastModifiedTime(file).toString());
+            
+        } catch (Exception e) {
+            logger.error("Failed to read EXIF data for photo {}", photoId, e);
+            exifData.put("error", "Failed to read EXIF data: " + e.getMessage());
+        }
+        
+        return exifData;
+    }
 }

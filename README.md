@@ -27,6 +27,8 @@ A comprehensive Java Spring Boot application for downloading and managing Unspla
 - **Collection Statistics**: View download stats and collection analytics
 - **API Key Management**: Add/remove/validate API keys through web interface
 - **Metadata Sync Management**: Batch process existing photos to embed EXIF metadata
+- **Individual Photo Status**: Sync status indicators on each photo with real-time updates
+- **EXIF Data Viewer**: View embedded metadata for any photo through interactive modals
 
 ## Prerequisites
 
@@ -129,6 +131,8 @@ Features available in web mode:
 - Collection statistics and analytics
 - Thumbnail generation
 - **Metadata sync system** for batch EXIF metadata processing
+- **Individual photo sync status** with visual indicators on each photo
+- **EXIF metadata viewer** to inspect embedded data for any photo
 
 ### Command Line Mode  
 For CLI-only batch downloading:
@@ -321,12 +325,35 @@ The metadata sync system is optimized for large photo collections:
 - **Progress Tracking**: Real-time statistics show both overall and sync system progress
 - **Memory Efficient**: Handles large collections without excessive memory usage
 
+### Individual Photo Status & EXIF Viewing
+
+Each photo in the web interface now includes:
+
+**Sync Status Indicators:**
+- **Visual badges** on each photo showing metadata sync status
+- **Color-coded indicators**: 
+  - 🟢 Green: Successfully synced
+  - 🟠 Orange: Pending sync
+  - 🔵 Blue: Currently processing
+  - 🔴 Red: Sync failed
+  - ⚪ Gray: Skipped (non-JPEG) or not in sync system
+- **Real-time updates**: Status changes automatically as sync processes run
+
+**EXIF Metadata Viewer:**
+- **EXIF button** on each photo card for instant metadata viewing
+- **Modal interface** displaying all embedded metadata fields
+- **Metadata details**: Shows Image Description, Artist, Copyright, Software, User Comment
+- **File information**: Displays file path, size, and last modified time
+- **Error handling**: Clear messages for files without EXIF data or missing files
+
 ### Benefits
 - **Portable Metadata**: Photo information travels with the image file
 - **Photo Management Software**: Works with Lightroom, Bridge, and other EXIF-aware tools
 - **Future-Proof**: Metadata remains accessible even without the database
 - **Search Enhancement**: Many photo organizers can search EXIF metadata
 - **Backup Safety**: Metadata preserved even if database is lost
+- **Individual Monitoring**: Track sync status for each photo at a glance
+- **Instant Verification**: View embedded metadata without external tools
 
 ## Data Storage
 

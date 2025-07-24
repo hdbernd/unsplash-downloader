@@ -53,6 +53,24 @@
                 column-count: 2;
             }
         }
+        .sync-status-badge {
+            font-size: 0.8em;
+        }
+        .sync-status-badge.bg-success {
+            background-color: #28a745 !important;
+        }
+        .sync-status-badge.bg-warning {
+            background-color: #ffc107 !important;
+        }
+        .sync-status-badge.bg-danger {
+            background-color: #dc3545 !important;
+        }
+        .sync-status-badge.bg-secondary {
+            background-color: #6c757d !important;
+        }
+        .exif-btn {
+            font-size: 0.8em;
+        }
     </style>
 </head>
 <body>
@@ -143,8 +161,13 @@
                             <i class="bi bi-hdd"></i>
                         </div>
                         <h5 class="card-title">Storage</h5>
-                        <h2 class="text-info mb-0" th:text="${collectionStats.formattedStorageSize}">0 MB</h2>
-                        <small class="text-muted" th:text="${collectionStats.totalFiles + ' files'}">0 files</small>
+                        <h2 class="text-info mb-0" id="storage-size">Loading...</h2>
+                        <small class="text-muted" id="storage-files">calculating...</small>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-info" onclick="showStorageBreakdown()">
+                                <i class="bi bi-pie-chart"></i> Details
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -316,9 +339,18 @@
         <div th:if="${photos.hasContent()}" class="masonry-grid">
             <div th:each="photo : ${photos.content}" class="masonry-item">
                 <div class="card photo-card" th:data-photo-id="${photo.id}">
-                    <img th:src="@{'/api/photos/' + ${photo.id} + '/thumbnail'}" 
-                         class="card-img-top photo-img" 
-                         th:alt="${photo.description}">
+                    <div class="position-relative">
+                        <img th:src="@{'/api/photos/' + ${photo.id} + '/thumbnail'}" 
+                             class="card-img-top photo-img" 
+                             th:alt="${photo.description}">
+                        <!-- Sync Status Badge -->
+                        <div class="position-absolute top-0 end-0 p-2">
+                            <span class="badge sync-status-badge" th:data-photo-id="${photo.id}" 
+                                  title="Metadata sync status">
+                                <i class="bi bi-three-dots"></i>
+                            </span>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <h6 class="card-title" th:text="${photo.title != null ? photo.title : 'Untitled'}">Photo Title</h6>
                         <p class="card-text photo-meta" th:text="${photo.description != null ? (photo.description.length() > 100 ? photo.description.substring(0, 100) + '...' : photo.description) : 'No description'}">
@@ -336,6 +368,12 @@
                         </div>
                         <div class="mt-2" th:if="${photo.tags != null and !photo.tags.isEmpty()}">
                             <span th:each="tag : ${photo.tags}" class="badge bg-secondary tag-badge" th:text="${tag.tagTitle}">Tag</span>
+                        </div>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-info exif-btn" th:data-photo-id="${photo.id}" 
+                                    title="View EXIF metadata">
+                                <i class="bi bi-info-circle"></i> EXIF
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -394,7 +432,92 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script>
+        // WebSocket connection for real-time updates
+        let stompClient = null;
+        
+        function connectWebSocket() {
+            const socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            
+            stompClient.connect({}, function(frame) {
+                console.log('Connected: ' + frame);
+                
+                // Subscribe to download progress updates
+                stompClient.subscribe('/topic/download-progress', function(message) {
+                    const progress = JSON.parse(message.body);
+                    updateDownloadProgress(progress);
+                });
+                
+                // Subscribe to stats refresh notifications
+                stompClient.subscribe('/topic/refresh-stats', function(message) {
+                    // Fetch updated collection stats via REST API
+                    fetch('/api/collection-stats')
+                        .then(response => response.json())
+                        .then(stats => {
+                            updateCollectionStats(stats);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching updated stats:', error);
+                        });
+                });
+            }, function(error) {
+                console.log('WebSocket connection error: ' + error);
+                // Retry connection after 5 seconds
+                setTimeout(connectWebSocket, 5000);
+            });
+        }
+        
+        function updateDownloadProgress(progress) {
+            // Update the current activity section if download is in progress
+            const activitySection = document.querySelector('.row.mb-4[th\\:if="${collectionStats.hasActiveDownload()}"]');
+            
+            if (progress && progress.active) {
+                // Show or update the activity section
+                if (!activitySection || activitySection.style.display === 'none') {
+                    // Reload page to show activity section properly
+                    location.reload();
+                } else {
+                    // Update existing progress display
+                    const usernameSpan = document.querySelector('[th\\:text="${collectionStats.currentProgress.username}"]');
+                    const messageSpan = document.querySelector('[th\\:text="${collectionStats.currentProgress.message}"]');
+                    const progressNumbers = document.querySelector('[th\\:text="${collectionStats.currentProgress.downloadedPhotos + \' / \' + collectionStats.currentProgress.totalPhotos}"]');
+                    const progressPercentage = document.querySelector('[th\\:text="${#numbers.formatDecimal(collectionStats.currentProgress.progressPercentage, 1, 1) + \'%\'}"]');
+                    const progressBar = document.querySelector('.progress-bar');
+                    
+                    if (usernameSpan) usernameSpan.textContent = progress.username || 'Unknown';
+                    if (messageSpan) messageSpan.textContent = progress.message || 'Downloading...';
+                    if (progressNumbers) progressNumbers.textContent = `${progress.downloadedPhotos || 0} / ${progress.totalPhotos || 0}`;
+                    if (progressPercentage) progressPercentage.textContent = `${(progress.progressPercentage || 0).toFixed(1)}%`;
+                    if (progressBar) progressBar.style.width = `${progress.progressPercentage || 0}%`;
+                }
+            } else if (!progress || !progress.active) {
+                // Hide activity section if download is complete
+                if (activitySection) {
+                    activitySection.style.display = 'none';
+                }
+            }
+        }
+        
+        function updateCollectionStats(stats) {
+            // Update collection overview statistics
+            const totalPhotosElement = document.querySelector('[th\\:text="${collectionStats.totalPhotos}"]');
+            const totalPhotographersElement = document.querySelector('[th\\:text="${collectionStats.totalPhotographers}"]');
+            const formattedStorageSizeElement = document.querySelector('[th\\:text="${collectionStats.formattedStorageSize}"]');
+            const totalFilesElement = document.querySelector('[th\\:text="${collectionStats.totalFiles + \' files\'}"]');
+            const apiUsageElement = document.querySelector('[th\\:text="${#numbers.formatDecimal(collectionStats.apiUsagePercentage, 1, 1) + \'%\'}"]');
+            const apiUsageDetailsElement = document.querySelector('[th\\:text="${collectionStats.totalApiUsage + \' / \' + collectionStats.totalApiLimit}"]');
+            
+            if (totalPhotosElement) totalPhotosElement.textContent = stats.totalPhotos || 0;
+            if (totalPhotographersElement) totalPhotographersElement.textContent = stats.totalPhotographers || 0;
+            if (formattedStorageSizeElement) formattedStorageSizeElement.textContent = stats.formattedStorageSize || '0 MB';
+            if (totalFilesElement) totalFilesElement.textContent = `${stats.totalFiles || 0} files`;
+            if (apiUsageElement) apiUsageElement.textContent = `${(stats.apiUsagePercentage || 0).toFixed(1)}%`;
+            if (apiUsageDetailsElement) apiUsageDetailsElement.textContent = `${stats.totalApiUsage || 0} / ${stats.totalApiLimit || 0}`;
+        }
+        
         // Add click handler for photo cards
         document.querySelectorAll('.photo-card').forEach(card => {
             card.addEventListener('click', function() {
@@ -403,6 +526,345 @@
                     window.location.href = `/photo/${photoId}`;
                 }
             });
+        });
+        
+        // Storage breakdown functionality
+        function showStorageBreakdown() {
+            // Show loading state
+            const modal = new bootstrap.Modal(document.getElementById('storageModal') || createStorageModal());
+            modal.show();
+            
+            // Fetch detailed storage stats
+            fetch('/api/storage-details')
+                .then(response => response.json())
+                .then(data => {
+                    updateStorageModal(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching storage details:', error);
+                    document.getElementById('storageModalBody').innerHTML = 
+                        '<div class="alert alert-danger">Failed to load storage details</div>';
+                });
+        }
+        
+        function createStorageModal() {
+            const modalHtml = `
+                <div class="modal fade" id="storageModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Storage Breakdown</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body" id="storageModalBody">
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Calculating storage usage...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            return document.getElementById('storageModal');
+        }
+        
+        function updateStorageModal(data) {
+            const breakdown = data.breakdown || {};
+            const modalBody = document.getElementById('storageModalBody');
+            
+            modalBody.innerHTML = `
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h6>Total Storage: ${data.formattedSize || '0 B'}</h6>
+                        <p class="text-muted">${data.totalFiles || 0} files total</p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-images text-primary"></i> Photos
+                                </h6>
+                                <div class="d-flex justify-content-between">
+                                    <span>${breakdown.photos?.formattedSize || '0 B'}</span>
+                                    <span class="text-muted">${breakdown.photos?.files || 0} files</span>
+                                </div>
+                                <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress-bar bg-primary" style="width: ${breakdown.photos?.percentage || 0}%"></div>
+                                </div>
+                                <small class="text-muted">${(breakdown.photos?.percentage || 0).toFixed(1)}%</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-card-image text-success"></i> Thumbnails
+                                </h6>
+                                <div class="d-flex justify-content-between">
+                                    <span>${breakdown.thumbnails?.formattedSize || '0 B'}</span>
+                                    <span class="text-muted">${breakdown.thumbnails?.files || 0} files</span>
+                                </div>
+                                <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress-bar bg-success" style="width: ${breakdown.thumbnails?.percentage || 0}%"></div>
+                                </div>
+                                <small class="text-muted">${(breakdown.thumbnails?.percentage || 0).toFixed(1)}%</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-database text-info"></i> Database
+                                </h6>
+                                <div class="d-flex justify-content-between">
+                                    <span>${breakdown.database?.formattedSize || '0 B'}</span>
+                                    <span class="text-muted">${breakdown.database?.files || 0} files</span>
+                                </div>
+                                <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress-bar bg-info" style="width: ${breakdown.database?.percentage || 0}%"></div>
+                                </div>
+                                <small class="text-muted">${(breakdown.database?.percentage || 0).toFixed(1)}%</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-file-text text-warning"></i> Other Files
+                                </h6>
+                                <div class="d-flex justify-content-between">
+                                    <span>${breakdown.other?.formattedSize || '0 B'}</span>
+                                    <span class="text-muted">${breakdown.other?.files || 0} files</span>
+                                </div>
+                                <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress-bar bg-warning" style="width: ${breakdown.other?.percentage || 0}%"></div>
+                                </div>
+                                <small class="text-muted">${(breakdown.other?.percentage || 0).toFixed(1)}%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-muted">
+                    <small>
+                        <i class="bi bi-info-circle"></i> 
+                        Photos: Downloaded images | Thumbnails: Generated previews | 
+                        Database: Metadata storage | Other: Logs, configs, descriptions
+                    </small>
+                </div>
+            `;
+        }
+        
+        // Load storage stats on page load
+        function loadStorageStats() {
+            fetch('/api/storage-details')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('storage-size').textContent = data.formattedSize || '0 B';
+                    document.getElementById('storage-files').textContent = `${data.totalFiles || 0} files`;
+                })
+                .catch(error => {
+                    console.error('Error loading storage stats:', error);
+                    document.getElementById('storage-size').textContent = 'Error';
+                    document.getElementById('storage-files').textContent = 'failed to load';
+                });
+        }
+        
+        // Load sync status for all visible photos
+        function loadSyncStatuses() {
+            document.querySelectorAll('.sync-status-badge').forEach(badge => {
+                const photoId = badge.getAttribute('data-photo-id');
+                
+                fetch(`/metadata-sync/photo/${photoId}/status`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateSyncStatusBadge(badge, data);
+                    })
+                    .catch(error => {
+                        console.error('Error loading sync status for photo', photoId, error);
+                        badge.className = 'badge sync-status-badge bg-secondary';
+                        badge.innerHTML = '<i class="bi bi-question"></i>';
+                        badge.title = 'Error loading sync status';
+                    });
+            });
+        }
+        
+        function updateSyncStatusBadge(badge, data) {
+            let className = 'badge sync-status-badge ';
+            let icon = '';
+            let title = '';
+            
+            switch(data.syncStatus) {
+                case 'COMPLETED':
+                    className += 'bg-success';
+                    icon = '<i class="bi bi-check"></i>';
+                    title = 'Metadata synced successfully';
+                    break;
+                case 'PENDING':
+                    className += 'bg-warning';
+                    icon = '<i class="bi bi-clock"></i>';
+                    title = 'Pending sync';
+                    break;
+                case 'FAILED':
+                case 'ERROR':
+                    className += 'bg-danger';
+                    icon = '<i class="bi bi-x"></i>';
+                    title = 'Sync failed: ' + (data.errorMessage || 'Unknown error');
+                    break;
+                case 'IN_PROGRESS':
+                    className += 'bg-info';
+                    icon = '<i class="bi bi-arrow-repeat"></i>';
+                    title = 'Sync in progress';
+                    break;
+                case 'SKIPPED':
+                    className += 'bg-secondary';
+                    icon = '<i class="bi bi-skip-forward"></i>';
+                    title = 'Skipped (not JPEG or file not found)';
+                    break;
+                case 'NOT_IN_SYNC_SYSTEM':
+                default:
+                    className += 'bg-secondary';
+                    icon = '<i class="bi bi-dash"></i>';
+                    title = 'Not in sync system';
+                    break;
+            }
+            
+            badge.className = className;
+            badge.innerHTML = icon;
+            badge.title = title;
+        }
+        
+        // Handle EXIF button clicks
+        function setupExifButtons() {
+            document.querySelectorAll('.exif-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent photo card click
+                    const photoId = this.getAttribute('data-photo-id');
+                    showExifModal(photoId);
+                });
+            });
+        }
+        
+        function showExifModal(photoId) {
+            const modalHtml = `
+                <div class="modal fade" id="exifModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">EXIF Metadata</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Loading EXIF data...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('exifModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('exifModal'));
+            modal.show();
+            
+            // Load EXIF data
+            fetch(`/metadata-sync/photo/${photoId}/exif`)
+                .then(response => response.json())
+                .then(data => {
+                    updateExifModal(data);
+                })
+                .catch(error => {
+                    console.error('Error loading EXIF data:', error);
+                    updateExifModal({error: 'Failed to load EXIF data'});
+                });
+        }
+        
+        function updateExifModal(data) {
+            const modalBody = document.querySelector('#exifModal .modal-body');
+            
+            if (data.error) {
+                modalBody.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> ${data.error}
+                    </div>
+                `;
+                return;
+            }
+            
+            let content = '';
+            
+            if (data.hasExifData && data.exifFields) {
+                content += '<h6>EXIF Metadata Fields:</h6>';
+                content += '<div class="table-responsive">';
+                content += '<table class="table table-sm">';
+                Object.entries(data.exifFields).forEach(([key, value]) => {
+                    content += `<tr><td class="fw-bold">${key}:</td><td>${value}</td></tr>`;
+                });
+                content += '</table></div>';
+            } else {
+                content += `<div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> ${data.message || 'No EXIF metadata found in this image.'}
+                </div>`;
+            }
+            
+            // Add file info
+            if (data.filePath) {
+                content += '<h6 class="mt-3">File Information:</h6>';
+                content += '<div class="table-responsive">';
+                content += '<table class="table table-sm">';
+                content += `<tr><td class="fw-bold">File Path:</td><td><code>${data.filePath}</code></td></tr>`;
+                if (data.fileSize) {
+                    const fileSizeMB = (data.fileSize / (1024 * 1024)).toFixed(2);
+                    content += `<tr><td class="fw-bold">File Size:</td><td>${fileSizeMB} MB</td></tr>`;
+                }
+                if (data.lastModified) {
+                    content += `<tr><td class="fw-bold">Last Modified:</td><td>${data.lastModified}</td></tr>`;
+                }
+                content += '</table></div>';
+            }
+            
+            modalBody.innerHTML = content;
+        }
+        
+        // Connect to WebSocket when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            connectWebSocket();
+            loadStorageStats();
+            loadSyncStatuses();
+            setupExifButtons();
+        });
+        
+        // Disconnect WebSocket when page unloads
+        window.addEventListener('beforeunload', function() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
         });
     </script>
 </body>
