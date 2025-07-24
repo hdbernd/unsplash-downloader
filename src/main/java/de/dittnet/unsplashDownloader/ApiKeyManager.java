@@ -172,16 +172,24 @@ public class ApiKeyManager {
     public synchronized String getNextAvailableKey() {
         LocalDateTime now = LocalDateTime.now();
         
-        // First, reset hourly counters and rate limit flags for keys from previous hour
+        // First, reset hourly counters and rate limit flags for keys after one hour has passed
         for (String key : apiKeys) {
             LocalDateTime lastUsed = lastUsageHour.get(key);
             LocalDateTime resetTime = rateLimitResetTime.get(key);
             
-            // Reset hourly usage if we're in a new hour
-            if (lastUsed != null && lastUsed.getHour() != now.getHour()) {
-                hourlyUsage.put(key, 0);
+            // Reset hourly usage if we've crossed into a new hour since last reset
+            // This implements fixed hourly windows (e.g., 2:00-3:00, 3:00-4:00) like most APIs
+            LocalDateTime lastResetHour = lastUsageHour.get(key);
+            if (lastResetHour == null || now.getHour() != lastResetHour.getHour() || now.getDayOfYear() != lastResetHour.getDayOfYear()) {
+                // Only reset if we actually have usage to reset
+                Integer currentUsage = hourlyUsage.get(key);
+                if (currentUsage != null && currentUsage > 0) {
+                    hourlyUsage.put(key, 0);
+                    logger.info("Reset hourly usage for API key (starts with: {}) - new hour boundary crossed (was {}/{})", 
+                        key.substring(0, Math.min(8, key.length())), currentUsage, hourlyLimit);
+                }
+                // Update the last reset hour to current hour
                 lastUsageHour.put(key, now);
-                logger.info("Reset hourly usage for API key (starts with: {})", key.substring(0, Math.min(8, key.length())));
             }
             
             // Reset rate limit flag if hour has passed since rate limit
@@ -266,13 +274,20 @@ public class ApiKeyManager {
         for (String key : apiKeys) {
             boolean rateLimited = keyRateLimited.get(key);
             LocalDateTime resetTime = rateLimitResetTime.get(key);
+            LocalDateTime lastUsed = lastUsageHour.get(key);
+            int usage = hourlyUsage.get(key);
             
             // Check if rate limit has expired
             if (rateLimited && resetTime != null && now.isAfter(resetTime)) {
                 rateLimited = false;
             }
             
-            if (!rateLimited && hourlyUsage.get(key) < hourlyLimit) {
+            // Check if hourly usage should be reset (crossed into a new hour)
+            if (lastUsed != null && (now.getHour() != lastUsed.getHour() || now.getDayOfYear() != lastUsed.getDayOfYear())) {
+                usage = 0; // Consider usage as reset for this check
+            }
+            
+            if (!rateLimited && usage < hourlyLimit) {
                 available++;
             }
         }
@@ -281,10 +296,28 @@ public class ApiKeyManager {
     }
     
     public synchronized LocalDateTime getNextResetTime() {
-        return rateLimitResetTime.values().stream()
+        LocalDateTime now = LocalDateTime.now();
+        List<LocalDateTime> resetTimes = new ArrayList<>();
+        
+        // Add rate limit reset times
+        rateLimitResetTime.values().stream()
             .filter(Objects::nonNull)
+            .filter(time -> now.isBefore(time))
+            .forEach(resetTimes::add);
+        
+        // Add usage reset times (at the top of the next hour for keys at limit)
+        for (String key : apiKeys) {
+            int usage = hourlyUsage.getOrDefault(key, 0);
+            if (usage >= hourlyLimit) {
+                // Reset happens at the top of the next hour
+                LocalDateTime nextHourReset = now.withMinute(0).withSecond(0).withNano(0).plusHours(1);
+                resetTimes.add(nextHourReset);
+            }
+        }
+        
+        return resetTimes.stream()
             .min(LocalDateTime::compareTo)
-            .orElse(LocalDateTime.now().plusHours(1));
+            .orElse(now.withMinute(0).withSecond(0).withNano(0).plusHours(1)); // Default to top of next hour
     }
     
     public synchronized LocalDateTime getLastUsageTime(String key) {
@@ -292,10 +325,48 @@ public class ApiKeyManager {
     }
     
     public synchronized LocalDateTime getAvailableAgainTime(String key) {
-        if (!keyRateLimited.getOrDefault(key, false)) {
-            return null; // Available now
+        LocalDateTime now = LocalDateTime.now();
+        
+        // If rate limited, return the rate limit reset time
+        if (keyRateLimited.getOrDefault(key, false)) {
+            LocalDateTime resetTime = rateLimitResetTime.get(key);
+            if (resetTime != null && now.isBefore(resetTime)) {
+                return resetTime;
+            }
         }
-        return rateLimitResetTime.get(key);
+        
+        // If at hourly limit, calculate when usage will reset (at the top of the next hour)
+        int usage = hourlyUsage.getOrDefault(key, 0);
+        if (usage >= hourlyLimit) {
+            // Reset happens at the top of the next hour
+            LocalDateTime nextHourReset = now.withMinute(0).withSecond(0).withNano(0).plusHours(1);
+            return nextHourReset;
+        }
+        
+        return null; // Available now
+    }
+    
+    /**
+     * Simulate hourly limit reached for testing countdown timer
+     */
+    public synchronized void simulateHourlyLimitReached(String key) {
+        LocalDateTime now = LocalDateTime.now();
+        hourlyUsage.put(key, hourlyLimit); // Set to limit
+        lastUsageHour.put(key, now); // Set last usage to now
+        keyRateLimited.put(key, false); // Not rate limited, just at hourly limit
+        logger.info("Simulated hourly limit reached for key: {}", maskKey(key));
+        try {
+            saveState();
+        } catch (IOException e) {
+            logger.error("Failed to save state after simulating hourly limit", e);
+        }
+    }
+    
+    private String maskKey(String key) {
+        if (key == null || key.length() < 8) {
+            return "***";
+        }
+        return key.substring(0, 6) + "***" + key.substring(key.length() - 4);
     }
     
     private void loadState() {
