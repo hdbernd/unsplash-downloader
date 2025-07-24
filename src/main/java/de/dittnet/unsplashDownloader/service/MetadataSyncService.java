@@ -193,8 +193,8 @@ public class MetadataSyncService {
     @Transactional
     public boolean syncPhotoMetadata(MetadataSyncEntity syncEntity) {
         try {
-            // Get photo data from database
-            Optional<PhotoEntity> photoOpt = photoService.getPhotoByIdOptional(syncEntity.getPhotoId());
+            // Get photo data from database with tags eagerly loaded
+            Optional<PhotoEntity> photoOpt = photoService.getPhotoById(syncEntity.getPhotoId());
             if (!photoOpt.isPresent()) {
                 syncEntity.markAsError("Photo not found in database");
                 metadataSyncRepository.save(syncEntity);
