@@ -67,6 +67,7 @@ replay_pid*
 # User-specific configuration
 user_settings.json
 local.properties
+local-config.properties
 
 # Build artifacts
 build/
