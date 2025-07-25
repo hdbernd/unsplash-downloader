@@ -17,8 +17,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,6 +37,9 @@ public class WebController {
     
     @Autowired
     private UserSettingsService userSettingsService;
+    
+    @Autowired
+    private de.dittnet.unsplashDownloader.service.ApiKeyService apiKeyService;
     
     @GetMapping("/")
     public String index(Model model,
@@ -67,19 +74,26 @@ public class WebController {
         model.addAttribute("totalPages", photos.getTotalPages());
         model.addAttribute("totalElements", photos.getTotalElements());
         
-        // Add filter options - limit for performance
-        List<String> photographers = photoService.getAllPhotographers().stream()
-            .limit(100) // Limit to top 100 photographers for performance
-            .collect(Collectors.toList());
-        List<String> tags = photoService.getAllTags().stream()
-            .limit(200) // Limit to top 200 tags for performance  
-            .collect(Collectors.toList());
+        // Add filter options - only load if needed for performance
+        if (photographer == null && tag == null && search == null) {
+            // Only load dropdown data for the main page, not for filtered views
+            List<String> photographers = photoService.getAllPhotographers().stream()
+                .limit(50) // Reduced limit for better performance
+                .collect(Collectors.toList());
+            List<String> tags = photoService.getAllTags().stream()
+                .limit(100) // Reduced limit for better performance  
+                .collect(Collectors.toList());
+            
+            model.addAttribute("photographers", photographers);
+            model.addAttribute("tags", tags);
+        } else {
+            // For filtered views, provide empty lists to avoid expensive queries
+            model.addAttribute("photographers", Collections.emptyList());
+            model.addAttribute("tags", Collections.emptyList());
+        }
         
-        model.addAttribute("photographers", photographers);
-        model.addAttribute("tags", tags);
-        
-        // Add collection statistics
-        CollectionStats stats = statsService.getCollectionStats();
+        // Add collection statistics - use cached/lightweight version
+        CollectionStats stats = getOptimizedCollectionStats();
         model.addAttribute("collectionStats", stats);
         
         return "index";
@@ -122,18 +136,13 @@ public class WebController {
     }
     
     @GetMapping("/popular")
-    public String popular(Model model,
-                         @RequestParam(name = "page", defaultValue = "0") int page,
-                         @RequestParam(name = "size", defaultValue = "24") int size) {
+    public String popular(Model model) {
         
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PhotoEntity> photos = photoService.getPhotosByLikes(pageable);
+        List<PhotoEntity> photos = photoService.getTop100PhotosWithLikes();
         
         model.addAttribute("photos", photos);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", photos.getTotalPages());
-        model.addAttribute("totalElements", photos.getTotalElements());
-        model.addAttribute("pageTitle", "Popular Photos");
+        model.addAttribute("totalPhotos", photos.size());
+        model.addAttribute("pageTitle", "Popular Photos - Top 100");
         
         return "popular";
     }
@@ -145,5 +154,68 @@ public class WebController {
         model.addAttribute("pageTitle", "Settings");
         
         return "settings";
+    }
+    
+    @GetMapping("/api/collection-stats")
+    @ResponseBody
+    public CollectionStats getCollectionStats() {
+        return statsService.getCollectionStats();
+    }
+    
+    @GetMapping("/api/storage-details")
+    @ResponseBody
+    public Map<String, Object> getStorageDetails() {
+        return statsService.calculateStorageStatsDetailed();
+    }
+    
+    /**
+     * Get optimized collection stats for home page - skips expensive storage calculation
+     */
+    private CollectionStats getOptimizedCollectionStats() {
+        CollectionStats stats = new CollectionStats();
+        
+        try {
+            // Fast operations only
+            stats.setTotalPhotos((int) photoService.getTotalPhotosCount());
+            stats.setTotalPhotographers(photoService.getAllPhotographers().stream()
+                .limit(50) // Use the same limited list
+                .collect(Collectors.toList()).size());
+            stats.setTotalTags(photoService.getAllTags().stream()
+                .limit(100) // Use the same limited list
+                .collect(Collectors.toList()).size());
+            
+            // Skip expensive storage calculation - show placeholder
+            stats.setTotalStorageBytes(0);
+            stats.setTotalFiles(0);
+            
+            // Fast API key stats
+            try {
+                List<de.dittnet.unsplashDownloader.model.ApiKeyInfo> apiKeys = apiKeyService.getAllApiKeys();
+                stats.setTotalApiKeys(apiKeys.size());
+                
+                int totalApiUsage = apiKeys.stream()
+                    .mapToInt(de.dittnet.unsplashDownloader.model.ApiKeyInfo::getUsageCount)
+                    .sum();
+                stats.setTotalApiUsage(totalApiUsage);
+                
+                int totalApiLimit = apiKeys.stream()
+                    .mapToInt(de.dittnet.unsplashDownloader.model.ApiKeyInfo::getHourlyLimit)
+                    .sum();
+                stats.setTotalApiLimit(totalApiLimit);
+            } catch (Exception e) {
+                // Fallback to basic stats
+                stats.setTotalApiKeys(0);
+                stats.setTotalApiUsage(0);
+                stats.setTotalApiLimit(0);
+            }
+            
+            stats.setLastUpdated(java.time.LocalDateTime.now());
+            
+        } catch (Exception e) {
+            // Return empty stats on error
+            stats = new CollectionStats();
+        }
+        
+        return stats;
     }
 }

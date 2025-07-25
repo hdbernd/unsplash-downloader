@@ -56,6 +56,18 @@ public class DownloadProgressService {
             } catch (Exception e) {
                 logger.error("Failed to send history update", e);
             }
+            
+            // Notify that stats should be refreshed when download completes
+            if (progress.getStatus() == DownloadStatus.COMPLETED) {
+                try {
+                    // Send a simple notification that stats should be refreshed
+                    // The client will then fetch updated stats via REST API
+                    messagingTemplate.convertAndSend("/topic/refresh-stats", "refresh");
+                    logger.debug("Sent stats refresh notification");
+                } catch (Exception e) {
+                    logger.error("Failed to send stats refresh notification", e);
+                }
+            }
         }
         
         // Send progress update via WebSocket

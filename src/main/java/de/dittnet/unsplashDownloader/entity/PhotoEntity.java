@@ -5,7 +5,12 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "photos")
+@Table(name = "photos", indexes = {
+    @Index(name = "idx_download_date", columnList = "download_date"),
+    @Index(name = "idx_photographer_name", columnList = "photographer_name"),
+    @Index(name = "idx_likes", columnList = "likes"),
+    @Index(name = "idx_color", columnList = "color")
+})
 public class PhotoEntity {
     @Id
     private String id;

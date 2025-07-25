@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Limit;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PhotoRepository extends JpaRepository<PhotoEntity, String> {
@@ -50,9 +52,21 @@ public interface PhotoRepository extends JpaRepository<PhotoEntity, String> {
     @Query("SELECT t.tagTitle, COUNT(t) as tagCount FROM PhotoTagEntity t GROUP BY t.tagTitle ORDER BY tagCount DESC, t.tagTitle ASC")
     List<Object[]> findPopularTagsWithCount();
     
+    // Get photo by ID with tags loaded
+    @Query("SELECT p FROM PhotoEntity p LEFT JOIN FETCH p.tags WHERE p.id = :id")
+    Optional<PhotoEntity> findByIdWithTags(@Param("id") String id);
+    
     // Get photos with color
     Page<PhotoEntity> findByColorContainingIgnoreCase(String color, Pageable pageable);
     
     // Get photos ordered by likes
     Page<PhotoEntity> findAllByOrderByLikesDesc(Pageable pageable);
+    
+    // Get top photos with likes (non-null and > 0) ordered by likes desc
+    @Query("SELECT p FROM PhotoEntity p WHERE p.likes IS NOT NULL AND p.likes > 0 ORDER BY p.likes DESC")
+    List<PhotoEntity> findTop100PhotosWithLikes(Limit limit);
+    
+    // Get photos without any tags
+    @Query("SELECT p FROM PhotoEntity p WHERE p.tags IS EMPTY OR SIZE(p.tags) = 0")
+    List<PhotoEntity> findPhotosWithoutTags();
 }

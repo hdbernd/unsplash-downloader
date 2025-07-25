@@ -53,21 +53,6 @@
                 column-count: 2;
             }
         }
-        .sync-status-badge {
-            font-size: 0.8em;
-        }
-        .sync-status-badge.bg-success {
-            background-color: #28a745 !important;
-        }
-        .sync-status-badge.bg-warning {
-            background-color: #ffc107 !important;
-        }
-        .sync-status-badge.bg-danger {
-            background-color: #dc3545 !important;
-        }
-        .sync-status-badge.bg-secondary {
-            background-color: #6c757d !important;
-        }
         .exif-btn {
             font-size: 0.8em;
         }
@@ -335,45 +320,6 @@
             </div>
         </div>
         
-        <!-- Sync Status Legend -->
-        <div th:if="${photos.hasContent()}" class="row mb-3">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body py-2">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap">
-                            <small class="text-muted fw-bold me-3">Metadata Sync Status:</small>
-                            <div class="d-flex flex-wrap gap-3">
-                                <small class="d-flex align-items-center">
-                                    <span class="badge bg-success me-1"><i class="bi bi-check"></i></span>
-                                    Synced
-                                </small>
-                                <small class="d-flex align-items-center">
-                                    <span class="badge bg-warning me-1"><i class="bi bi-clock"></i></span>
-                                    Pending
-                                </small>
-                                <small class="d-flex align-items-center">
-                                    <span class="badge bg-info me-1"><i class="bi bi-arrow-repeat"></i></span>
-                                    Processing
-                                </small>
-                                <small class="d-flex align-items-center">
-                                    <span class="badge bg-danger me-1"><i class="bi bi-x"></i></span>
-                                    Failed
-                                </small>
-                                <small class="d-flex align-items-center">
-                                    <span class="badge bg-secondary me-1"><i class="bi bi-skip-forward"></i></span>
-                                    Skipped
-                                </small>
-                                <small class="d-flex align-items-center">
-                                    <span class="badge bg-secondary me-1"><i class="bi bi-dash"></i></span>
-                                    Not Tracked
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <!-- Photo Grid -->
         <div th:if="${photos.hasContent()}" class="masonry-grid">
             <div th:each="photo : ${photos.content}" class="masonry-item">
@@ -382,13 +328,6 @@
                         <img th:src="@{'/api/photos/' + ${photo.id} + '/thumbnail'}" 
                              class="card-img-top photo-img" 
                              th:alt="${photo.description}">
-                        <!-- Sync Status Badge -->
-                        <div class="position-absolute top-0 end-0 p-2">
-                            <span class="badge sync-status-badge" th:data-photo-id="${photo.id}" 
-                                  title="Metadata sync status">
-                                <i class="bi bi-three-dots"></i>
-                            </span>
-                        </div>
                     </div>
                     <div class="card-body">
                         <h6 class="card-title" th:text="${photo.title != null ? photo.title : 'Untitled'}">Photo Title</h6>
@@ -722,69 +661,6 @@
                 });
         }
         
-        // Load sync status for all visible photos
-        function loadSyncStatuses() {
-            document.querySelectorAll('.sync-status-badge').forEach(badge => {
-                const photoId = badge.getAttribute('data-photo-id');
-                
-                fetch(`/metadata-sync/photo/${photoId}/status`)
-                    .then(response => response.json())
-                    .then(data => {
-                        updateSyncStatusBadge(badge, data);
-                    })
-                    .catch(error => {
-                        console.error('Error loading sync status for photo', photoId, error);
-                        badge.className = 'badge sync-status-badge bg-secondary';
-                        badge.innerHTML = '<i class="bi bi-question"></i>';
-                        badge.title = 'Error loading sync status';
-                    });
-            });
-        }
-        
-        function updateSyncStatusBadge(badge, data) {
-            let className = 'badge sync-status-badge ';
-            let icon = '';
-            let title = '';
-            
-            switch(data.syncStatus) {
-                case 'COMPLETED':
-                    className += 'bg-success';
-                    icon = '<i class="bi bi-check"></i>';
-                    title = 'Metadata synced successfully';
-                    break;
-                case 'PENDING':
-                    className += 'bg-warning';
-                    icon = '<i class="bi bi-clock"></i>';
-                    title = 'Pending sync';
-                    break;
-                case 'FAILED':
-                case 'ERROR':
-                    className += 'bg-danger';
-                    icon = '<i class="bi bi-x"></i>';
-                    title = 'Sync failed: ' + (data.errorMessage || 'Unknown error');
-                    break;
-                case 'IN_PROGRESS':
-                    className += 'bg-info';
-                    icon = '<i class="bi bi-arrow-repeat"></i>';
-                    title = 'Sync in progress';
-                    break;
-                case 'SKIPPED':
-                    className += 'bg-secondary';
-                    icon = '<i class="bi bi-skip-forward"></i>';
-                    title = 'Skipped (not JPEG or file not found)';
-                    break;
-                case 'NOT_IN_SYNC_SYSTEM':
-                default:
-                    className += 'bg-secondary';
-                    icon = '<i class="bi bi-dash"></i>';
-                    title = 'Not in sync system';
-                    break;
-            }
-            
-            badge.className = className;
-            badge.innerHTML = icon;
-            badge.title = title;
-        }
         
         // Handle EXIF button clicks
         function setupExifButtons() {
@@ -833,7 +709,7 @@
             modal.show();
             
             // Load EXIF data
-            fetch(`/metadata-sync/photo/${photoId}/exif`)
+            fetch(`/exif/photo/${photoId}`)
                 .then(response => response.json())
                 .then(data => {
                     updateExifModal(data);
@@ -895,7 +771,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             connectWebSocket();
             loadStorageStats();
-            loadSyncStatuses();
             setupExifButtons();
         });
         

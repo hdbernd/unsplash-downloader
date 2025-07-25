@@ -5,6 +5,8 @@ import de.dittnet.unsplashDownloader.service.UserSettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,9 @@ public class SettingsController {
     
     @Autowired
     private UserSettingsService settingsService;
+    
+    @Autowired
+    private ApplicationContext applicationContext;
     
     @PostMapping("/update")
     public ResponseEntity<Map<String, Object>> updateFullSettings(
@@ -165,6 +170,37 @@ public class SettingsController {
             logger.error("Failed to remove path from history", e);
             response.put("success", false);
             response.put("message", "Failed to remove path: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+    
+    @PostMapping("/shutdown")
+    public ResponseEntity<Map<String, Object>> shutdownApplication() {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            logger.info("Graceful shutdown requested via UI");
+            
+            response.put("success", true);
+            response.put("message", "Application shutdown initiated. The server will stop in a few seconds.");
+            
+            // Start shutdown in a separate thread to allow response to be sent first
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000); // Give time for response to be sent
+                    logger.info("Initiating graceful application shutdown...");
+                    SpringApplication.exit(applicationContext, () -> 0);
+                } catch (Exception e) {
+                    logger.error("Error during shutdown", e);
+                }
+            }).start();
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            logger.error("Failed to initiate shutdown", e);
+            response.put("success", false);
+            response.put("message", "Failed to initiate shutdown: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }

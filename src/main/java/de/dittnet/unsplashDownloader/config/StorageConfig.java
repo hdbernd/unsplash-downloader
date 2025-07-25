@@ -1,25 +1,43 @@
 package de.dittnet.unsplashDownloader.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 @Configuration
+@Component
 public class StorageConfig {
     private static final Logger logger = LoggerFactory.getLogger(StorageConfig.class);
+    private static final String LOCAL_CONFIG_FILE = "./local-config.properties";
     
     @Value("${app.base-directory:./unsplash-data}")
     private String fallbackBaseDirectory;
     
     private String currentBaseDirectory;
     private boolean isUserDefined = false;
+    
+    public StorageConfig() {
+        // Load user directory immediately in constructor so it's available for other beans
+        loadUserDirectoryFromConfig();
+    }
+    
+    @EventListener(ApplicationReadyEvent.class)
+    public void onApplicationReady() {
+        // Additional initialization if needed after full startup
+        logger.info("Application ready - current base directory: {}", getBaseDirectory());
+    }
     
     public String getBaseDirectory() {
         return currentBaseDirectory != null ? currentBaseDirectory : fallbackBaseDirectory;
@@ -30,6 +48,7 @@ public class StorageConfig {
             this.currentBaseDirectory = Paths.get(userDefinedPath, ".unsplash-downloader").toString();
             this.isUserDefined = true;
             logger.info("Set user-defined base directory to: {}", this.currentBaseDirectory);
+            saveUserDirectoryToConfig(userDefinedPath);
         }
     }
     
@@ -149,6 +168,52 @@ public class StorageConfig {
             // Also create user photos directory
             String userPhotosDir = getUserPhotosDirectory(userOutputPath);
             createDirectoryIfNotExists(userPhotosDir);
+        }
+    }
+    
+    private void loadUserDirectoryFromConfig() {
+        File configFile = new File(LOCAL_CONFIG_FILE);
+        if (configFile.exists()) {
+            try (FileInputStream fis = new FileInputStream(configFile)) {
+                Properties props = new Properties();
+                props.load(fis);
+                String userDirectory = props.getProperty("user.base.directory");
+                if (userDirectory != null && !userDirectory.trim().isEmpty()) {
+                    this.currentBaseDirectory = Paths.get(userDirectory, ".unsplash-downloader").toString();
+                    this.isUserDefined = true;
+                    logger.info("Loaded user directory from local config: {}", this.currentBaseDirectory);
+                }
+            } catch (IOException e) {
+                logger.warn("Failed to load user directory from local config: {}", e.getMessage());
+            }
+        } else {
+            logger.info("No local config file found, using default directory: {}", fallbackBaseDirectory);
+        }
+    }
+    
+    private void saveUserDirectoryToConfig(String userDefinedPath) {
+        try {
+            File configFile = new File(LOCAL_CONFIG_FILE);
+            Properties props = new Properties();
+            
+            // Load existing properties if file exists
+            if (configFile.exists()) {
+                try (FileInputStream fis = new FileInputStream(configFile)) {
+                    props.load(fis);
+                }
+            }
+            
+            // Update user directory property
+            props.setProperty("user.base.directory", userDefinedPath);
+            
+            // Save properties
+            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(configFile)) {
+                props.store(fos, "Local configuration - User directory settings");
+            }
+            
+            logger.info("Saved user directory to local config: {}", userDefinedPath);
+        } catch (IOException e) {
+            logger.error("Failed to save user directory to local config: {}", e.getMessage());
         }
     }
 }

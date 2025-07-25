@@ -43,10 +43,20 @@
                             <p th:text="${photo.description}">Photo description</p>
                         </div>
 
-                        <div class="mb-3" th:if="${photo.tags != null and !photo.tags.isEmpty()}">
-                            <h6><i class="bi bi-tags"></i> Tags</h6>
-                            <div>
-                                <span th:each="tag : ${photo.tags}" class="badge bg-secondary me-1 mb-1" th:text="${tag.tagTitle}">Tag</span>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6><i class="bi bi-tags"></i> Tags</h6>
+                                <button class="btn btn-sm btn-outline-primary" id="refreshTagsBtn" onclick="refreshPhotoTags()">
+                                    <i class="bi bi-arrow-clockwise"></i> Refresh Tags
+                                </button>
+                            </div>
+                            <div id="tagsContainer">
+                                <div th:if="${photo.tags != null and !photo.tags.isEmpty()}">
+                                    <span th:each="tag : ${photo.tags}" class="badge bg-secondary me-1 mb-1" th:text="${tag.tagTitle}">Tag</span>
+                                </div>
+                                <div th:if="${photo.tags == null or photo.tags.isEmpty()}" class="text-muted fst-italic">
+                                    No tags available. Click "Refresh Tags" to fetch from Unsplash.
+                                </div>
                             </div>
                         </div>
 
@@ -102,11 +112,19 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
         // Load related photos
         document.addEventListener('DOMContentLoaded', function() {
-            const photographerName = /*[[${photo.photographerName}]]*/ '';
-            const currentPhotoId = /*[[${photo.id}]]*/ '';
+            const photographerName = [[${photo.photographerName}]];
+            const currentPhotoId = [[${photo.id}]];
+            
+            console.log('Photo data loaded:', {photographerName, currentPhotoId});
+            
+            if (!photographerName || !currentPhotoId) {
+                console.error('Missing photo data:', {photographerName, currentPhotoId});
+                document.getElementById('related-photos').innerHTML = '<p class="text-muted">Error loading photo data.</p>';
+                return;
+            }
             
             fetch(`/api/photos/photographer/${encodeURIComponent(photographerName)}?size=6`)
                 .then(response => response.json())
@@ -149,6 +167,69 @@
                     document.getElementById('related-photos').innerHTML = '<p class="text-muted">Error loading related photos.</p>';
                 });
         });
+        
+        // Refresh tags for current photo
+        function refreshPhotoTags() {
+            const currentPhotoId = [[${photo.id}]];
+            const refreshBtn = document.getElementById('refreshTagsBtn');
+            const tagsContainer = document.getElementById('tagsContainer');
+            
+            if (!currentPhotoId) {
+                showAlert('Photo ID not available for tag refresh', 'danger');
+                return;
+            }
+            
+            // Update button to show loading state
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Refreshing...';
+            
+            fetch(`/api/photos/${currentPhotoId}/refresh-tags`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert(`Successfully refreshed ${data.tagCount} tags for this photo!`, 'success');
+                    
+                    // Reload the page to show updated tags
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('Failed to refresh tags: ' + data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error refreshing tags:', error);
+                showAlert('Failed to refresh tags. Please try again.', 'danger');
+            })
+            .finally(() => {
+                // Reset button state
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Refresh Tags';
+            });
+        }
+        
+        // Show alert messages
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Insert at the top of the content
+            const content = document.querySelector('[layout\\:fragment="content"]');
+            content.insertBefore(alertDiv, content.firstChild);
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
     </script>
 </body>
 </html>

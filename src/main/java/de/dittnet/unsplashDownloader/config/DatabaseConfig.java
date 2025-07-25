@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import de.dittnet.unsplashDownloader.service.DatabaseSyncService;
 
 import javax.sql.DataSource;
 
@@ -23,7 +24,24 @@ public class DatabaseConfig {
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
         String databasePath = storageConfig.getDatabasePath();
-        String jdbcUrl = "jdbc:h2:file:" + databasePath;
+        String jdbcUrl;
+        
+        // Always use local database with network synchronization for reliability
+        if (databasePath.startsWith("/Volumes/")) {
+            // Initialize local database from network BEFORE creating datasource
+            DatabaseSyncService.initializeDatabaseFromNetwork(databasePath);
+            
+            // Use local database with automatic sync to network drive
+            String localDbPath = "./unsplash-data/database/unsplash_photos";
+            jdbcUrl = "jdbc:h2:file:" + localDbPath + ";FILE_LOCK=NO";
+            logger.info("Network drive detected for data path: {}. Using local database with network synchronization.", databasePath);
+            logger.info("Local database: {} -> Network sync: {}", localDbPath, databasePath.replace("/database/unsplash_photos", "/database/"));
+            logger.info("DatabaseSyncService will automatically sync local database to network drive every minute and on shutdown.");
+        } else {
+            // Use file-based database for local drives with no file locking
+            jdbcUrl = "jdbc:h2:file:" + databasePath + ";FILE_LOCK=NO";
+            logger.info("Local drive detected. Using file-based database: {}", databasePath);
+        }
         
         logger.info("Configuring database with URL: {}", jdbcUrl);
         
